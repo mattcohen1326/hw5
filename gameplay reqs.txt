@@ -1,0 +1,12 @@
+Project Gameplay Reqs
+1.	Simplified version of Mario party
+2.	Our board will be a loop where each square has an event and players move around it
+3.	Mario party. Characters, minigames
+4.	Coins, stars, items
+5.	By winning minigames, landing on special spots stealing from other players, buying items/stars
+6.	Upgradeable dice and (usable ability to reroll?)
+7.	Minigames
+8.	From 2 to 4 players
+9.	The computer will look for good options and then randomly choose between the good options
+10.	The start of the game everyone is at the same spot with same resources and the end state happens when the turns are over
+11.	Using items special event squares
