@@ -36,3 +36,5 @@ void Cell::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     painter->drawRect(QRect(this->col_, this->row_, this->width_, this->width_));
     painter->setBrush(b);
 }
+
+

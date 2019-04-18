@@ -8,7 +8,7 @@
 #include <QMainWindow>
 #include <QTimer>
 #include "cell.h"
-
+#include "player.h"
 namespace Ui {
 class MainWindow;
 }
@@ -23,6 +23,7 @@ public:
 
 
 private:
+    Player * players[4];
     Ui::MainWindow *ui;
     QGraphicsScene *scene;
     Cell * cells[20][20];
@@ -30,6 +31,9 @@ private:
     void calc_neighbors();
     int rows_;
     int cols_;
+    void debug_neighbors();
+    void move_player(Player * cplayer);
+
 };
 
 #endif // MAINWINDOW_H

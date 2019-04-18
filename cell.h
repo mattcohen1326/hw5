@@ -16,13 +16,18 @@ public:
     bool is_alive(){return alive_;}
     void set_alive(bool x){alive_ = x;}
     void set_row(int x){row_ = x;}
+    void set_coin(int x){coin_value = x;}
     void set_color(QColor x){color_ = x;}
     void set_col(int x){col_ = x;}
+    int get_coins(){return coin_value;}
     QRectF boundingRect() const override;
     QPainterPath shape() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget) override;
     bool neighbors[8];
+    bool is_gate = false;
 private:
+
+    int coin_value;
     QColor color_;
     bool alive_;
     int col_;
