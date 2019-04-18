@@ -4,7 +4,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QDebug>
-
+//Matthew Cohen and Alejandro Gonzales
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
