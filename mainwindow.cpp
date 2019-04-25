@@ -36,16 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
     qt_party();
     calc_neighbors();
     //set spaces that are gates (chose which way you go)
-    cells[14][4]->is_gate = true;
-    cells[14][10]->is_gate = true;
-    cells[14][16]->is_gate = true;
-    cells[19][10]->is_gate = true;
-    cells[8][10]->is_gate = true;
-    cells[5][12]->is_gate = true;
-    cells[0][12]->is_gate = true;
-    cells[3][5]->is_gate = true;
-    cells[3][3]->is_gate = true;
-    cells[4][2]->is_gate = true;
+
     //debug_neighbors();
     for(int i = 0; i <= rows_;i++){
         for(int j = 0; j<= cols_;j++){
@@ -63,89 +54,339 @@ MainWindow::MainWindow(QWidget *parent) :
 
                 }
                 cells[i][j]->set_color(color);
+                cells[i][j]->set_norm(color);
             }
             else{
                 QColor color = QColor(211,211,211);
                 cells[i][j]->set_color(color);
+                cells[i][j]->set_norm(color);
             }
         }
     }
 
-    scene->update();
-
-}
-void MainWindow::move_player(Player *cplayer){ //logic to move one space based on what direction youre going NOT FINISHED
-
-    if(cplayer->get_dir() == "right"){
-        if(cells[cplayer->get_row()][cplayer->get_col()+1]->is_gate){
-            cplayer->set_col(cplayer->get_col()+1);
-            return;
-        }
-        else if(cells[cplayer->get_row()][cplayer->get_col()]->is_gate){
-            //Output "Choices"
-            if(cells[cplayer->get_row()][cplayer->get_col()]->neighbors[1]){
-                    qDebug() << "UP";
-            }
-            if(cells[cplayer->get_row()][cplayer->get_col()]->neighbors[3]){
-                qDebug() << "LEFT";
-            }
-            if(cells[cplayer->get_row()][cplayer->get_col()]->neighbors[4]){
-                qDebug() << "RIGHT";
-            }
-            if(cells[cplayer->get_row()][cplayer->get_col()]->neighbors[6]){
-                qDebug() << "DOWN";
-            }
+    for(int i = 0; i < 4; i++){
+        players[i] = new Player();
+    }
+    current_player = players[0];
+    qDebug() << current_player->roll;
+    /*while(current_player->roll != 0){
+        qDebug() << "HERE";
+        if(!cells[current_player->get_row()][current_player->get_col()]->is_gate){
+            qDebug() << "OKKKK";
+            move_player(players[0]);
+            current_player->roll--;
         }
         else{
-            if(cells[cplayer->get_row()][cplayer->get_col()]->neighbors[4]){
-                cplayer->set_col(cplayer->get_col()+1);
-                return;
+            continue_move = true;
+            qDebug() << "FUCK" ;
+            move_player(players[0]);
+            current_player->roll--;
+        }
+       qDebug() << "ROLL" << current_player->roll;
+    }*/
+
+    //std::string out = "yay";
+    std::string out = players[0]->get_dir();
+    QString outs = QString::fromUtf8(out.c_str());
+    qDebug() << outs ;
+    scene->update();
+
+
+}
+void MainWindow::move_player(){ //logic to move one space based on what direction youre going NOT FINISHED
+    if(ui->gateChoice->currentText() != ""){
+    current_player->set_dir(ui->gateChoice->currentText().toLocal8Bit().constData());
+    QString dir = QString::fromUtf8(current_player->get_dir().c_str());
+    qDebug() <<dir;
+    }
+    cells[current_player->get_row()][current_player->get_col()]->set_color(cells[current_player->get_row()][current_player->get_col()]->get_norm());
+    if(current_player->get_dir() == "right"){
+
+        if(cells[current_player->get_row()][current_player->get_col()+1]->is_gate){
+            current_player->set_col(current_player->get_col()+1);
+        }
+        else if(cells[current_player->get_row()-1][current_player->get_col()]->is_gate){
+            current_player->set_row(current_player->get_row()-1);
+        }
+        else if(cells[current_player->get_row()+1][current_player->get_col()]->is_gate){
+             current_player->set_row(current_player->get_row()+1);
+        }
+
+        /*else if(cells[current_player->get_row()][current_player->get_col()]->is_gate){
+            //Output "Choices"
+            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[1]){
+                    qDebug() << "UP";
+                    ui->gateChoice->addItem("up");
             }
-            else if(cells[cplayer->get_row()][cplayer->get_col()]->neighbors[2]){
-                cplayer->set_row(cplayer->get_row()-1);
-                cplayer->set_col(cplayer->get_col()+1);
+            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[3]){
+                qDebug() << "LEFT";
+                ui->gateChoice->addItem("left");
             }
-            else if(cells[cplayer->get_row()][cplayer->get_col()]->neighbors[7]){
-                cplayer->set_row(cplayer->get_row()+1);
-                cplayer->set_col(cplayer->get_col()+1);
+            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[4]){
+                qDebug() << "RIGHT";
+                ui->gateChoice->addItem("right");
+            }
+            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[6]){
+                qDebug() << "DOWN";
+                ui->gateChoice->addItem("down");
+            }
+            if(continue_move){
+                if(ui->gateChoice->currentText() == "right"){
+                    current_player->set_col(current_player->get_col()+1);
+                }
+                else if(ui->gateChoice->currentText() == "up"){
+                    current_player->set_row(current_player->get_row()-1);
+                }
+                else if(ui->gateChoice->currentText() == "left"){
+                    current_player->set_col(current_player->get_col()-1);
+                }
+                else if(ui->gateChoice->currentText() == "down"){
+                    current_player->set_row(current_player->get_row()+1);
+                }
+            }
+
+        }*/
+        else{
+            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[4]){
+                current_player->set_col(current_player->get_col()+1);
+            }
+            else if(cells[current_player->get_row()][current_player->get_col()]->neighbors[2]){
+                current_player->set_row(current_player->get_row()-1);
+                current_player->set_col(current_player->get_col()+1);
+            }
+            else if(cells[current_player->get_row()][current_player->get_col()]->neighbors[7]){
+                current_player->set_row(current_player->get_row()+1);
+                current_player->set_col(current_player->get_col()+1);
+            }
+            else{
+                if(cells[current_player->get_row()][current_player->get_col()]->neighbors[1]){
+                    current_player->set_dir("up");
+                }
+                else{
+                    current_player->set_dir("down");
+                }
+                move_player();
             }
 
         }
     }
-
-
-        if(cells[cplayer->get_row()][cplayer->get_col()]->is_gate){
+    else if(current_player->get_dir() == "left"){
+        if(cells[current_player->get_row()][current_player->get_col()-1]->is_gate){
+            current_player->set_col(current_player->get_col()-1);
+        }
+        else if(cells[current_player->get_row()-1][current_player->get_col()]->is_gate){
+            current_player->set_row(current_player->get_row()-1);
+        }
+        else if(cells[current_player->get_row()+1][current_player->get_col()]->is_gate){
+            current_player->set_row(current_player->get_row()+1);
+        }
+        /*else if(cells[current_player->get_row()][current_player->get_col()]->is_gate){
             //Output "Choices"
-            if(cells[cplayer->get_row()][cplayer->get_col()]->neighbors[1]){
+            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[1]){
                     qDebug() << "UP";
             }
-            if(cells[cplayer->get_row()][cplayer->get_col()]->neighbors[3]){
+            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[3]){
                 qDebug() << "LEFT";
             }
-            if(cells[cplayer->get_row()][cplayer->get_col()]->neighbors[4]){
+            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[4]){
                 qDebug() << "RIGHT";
             }
-            if(cells[cplayer->get_row()][cplayer->get_col()]->neighbors[6]){
+            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[6]){
                 qDebug() << "DOWN";
             }
+        }*/
+        else{
+            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[3]){
+                current_player->set_col(current_player->get_col()-1);
+            }
+            else if(cells[current_player->get_row()][current_player->get_col()]->neighbors[0]){
+                current_player->set_row(current_player->get_row()-1);
+                current_player->set_col(current_player->get_col()-1);
+            }
+            else if(cells[current_player->get_row()][current_player->get_col()]->neighbors[5]){
+                current_player->set_row(current_player->get_row()+1);
+                current_player->set_col(current_player->get_col()-1);
+            }
+            else{
+                if(cells[current_player->get_row()][current_player->get_col()]->neighbors[6]){
+                    current_player->set_dir("down");
+                    move_player();
+                }
+                else{
+                    current_player->set_dir("up");
+                    move_player();
+                }
+            }
+
         }
     }
+    else if(current_player->get_dir() == "up"){
+
+        if(cells[current_player->get_row()-1][current_player->get_col()]->is_gate){
+            current_player->set_row(current_player->get_row()-1);
+        }
+        else if(cells[current_player->get_row()][current_player->get_col()-1]->is_gate){
+            current_player->set_col(current_player->get_col()-1);
+        }
+        else if(cells[current_player->get_row()][current_player->get_col()+1]->is_gate){
+            current_player->set_col(current_player->get_col()+1);
+        }
+        /*else if(cells[current_player->get_row()][current_player->get_col()]->is_gate){
+            //Output "Choices"
+            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[1]){
+                    qDebug() << "UP";
+            }
+            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[3]){
+                qDebug() << "LEFT";
+            }
+            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[4]){
+                qDebug() << "RIGHT";
+            }
+            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[6]){
+                qDebug() << "DOWN";
+            }
+        }*/
+        else{
+            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[1]){
+                current_player->set_row(current_player->get_row()-1);
+            }
+            else if(cells[current_player->get_row()][current_player->get_col()]->neighbors[0]){
+                current_player->set_row(current_player->get_row()-1);
+                current_player->set_col(current_player->get_col()-1);
+
+            }
+            else if(cells[current_player->get_row()][current_player->get_col()]->neighbors[2]){
+                current_player->set_row(current_player->get_row()-1);
+                current_player->set_col(current_player->get_col()+1);
+            }
+            else{
+                if(cells[current_player->get_row()][current_player->get_col()]->neighbors[4]){
+                    current_player->set_dir("right");
+                    move_player();
+                }
+                else{
+                    current_player->set_dir("left");
+                    move_player();
+                }
+            }
+
+        }
+
+    }
+    else if(current_player->get_dir()== "down"){
+        if(current_player->get_row() == rows_){
+            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[4]){
+                current_player->set_dir("right");
+                move_player();
+            }
+            else{
+                current_player->set_dir("left");
+            }
+        }
+        else if(cells[current_player->get_row()+1][current_player->get_col()]->is_gate){
+            current_player->set_row(current_player->get_row()+1);
+        }
+        else if(cells[current_player->get_row()][current_player->get_col()-1]->is_gate){
+            current_player->set_col(current_player->get_col()-1);
+        }
+        else if(cells[current_player->get_row()][current_player->get_col()+1]->is_gate){
+            current_player->set_col(current_player->get_col()+1);
+        }
+        /*else if(cells[current_player->get_row()][current_player->get_col()]->is_gate){
+            //Output "Choices"
+            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[1]){
+                    qDebug() << "UP";
+            }
+            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[3]){
+                qDebug() << "LEFT";
+            }
+            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[4]){
+                qDebug() << "RIGHT";
+            }
+            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[6]){
+                qDebug() << "DOWN";
+            }
+        }*/
+        else{
+            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[6]){
+                current_player->set_row(current_player->get_row()+1);
+            }
+            else if(cells[current_player->get_row()][current_player->get_col()]->neighbors[7]){
+                current_player->set_row(current_player->get_row()+1);
+                current_player->set_col(current_player->get_col()+1);
+            }
+            else if(cells[current_player->get_row()][current_player->get_col()]->neighbors[5]){
+                current_player->set_row(current_player->get_row()+1);
+                current_player->set_col(current_player->get_col()-1);
+
+            }
+            else{
+                if(cells[current_player->get_row()][current_player->get_col()]->neighbors[4]){
+                    current_player->set_dir("right");
+
+                    move_player();
+                }
+                else{
+                    current_player->set_dir("left");
+                }
+            }
+
+        }
+    }
+
+    int crow = current_player->get_row();
+    int ccol = current_player->get_col();
+    if(cells[current_player->get_row()][current_player->get_col()]->is_gate){
+        if(cells[crow][ccol]->neighbors[1]){
+            ui->gateChoice->addItem("up");
+        }
+        if(cells[crow][ccol]->neighbors[3]){
+            ui->gateChoice->addItem("left");
+        }
+        if(cells[crow][ccol]->neighbors[4]){
+            ui->gateChoice->addItem("right");
+        }
+        if(cells[crow][ccol]->neighbors[6]){
+            ui->gateChoice->addItem("down");
+        }
+
+
+    }
+    else{
+        ui->gateChoice->clear();
+    }
+
+    QColor col = QColor(255,0,255);
+    current_player->roll--;
+    cells[current_player->get_row()][current_player->get_col()]->set_color(col);
+    QString crow_ = QString::number(current_player->get_row());
+    QString ccol_ = QString::number(current_player->get_col());
+    ui->rowLabel->setText(crow_);
+    ui->colLabel->setText(ccol_);
+    scene->update();
+    return;
+
+
+
+
+    }
 //sets the board up
+
 void MainWindow::qt_party(){
-    cells[0][0]->set_alive(true);
-    cells[0][1]->set_alive(true);
-    cells[0][2]->set_alive(true);
-    cells[0][3]->set_alive(true);
-    cells[0][8]->set_alive(true);
-    cells[0][9]->set_alive(true);
-    cells[0][10]->set_alive(true);
-    cells[0][11]->set_alive(true);
-    cells[0][12]->set_alive(true);
-    cells[0][13]->set_alive(true);
-    cells[0][14]->set_alive(true);
-    cells[0][15]->set_alive(true);
-    cells[0][16]->set_alive(true);
-    cells[0][17]->set_alive(true);
+    cells[1][0]->set_alive(true);
+    cells[1][1]->set_alive(true);
+    cells[1][2]->set_alive(true);
+    cells[1][3]->set_alive(true);
+    cells[1][8]->set_alive(true);
+    cells[1][9]->set_alive(true);
+    cells[1][10]->set_alive(true);
+    cells[1][11]->set_alive(true);
+    cells[1][12]->set_alive(true);
+    cells[1][13]->set_alive(true);
+    cells[1][14]->set_alive(true);
+    cells[1][15]->set_alive(true);
+    cells[1][16]->set_alive(true);
+    cells[1][17]->set_alive(true);
     cells[1][0]->set_alive(true);
     cells[1][3]->set_alive(true);
     cells[1][5]->set_alive(true);
@@ -228,7 +469,7 @@ void MainWindow::qt_party(){
     cells[13][10]->set_alive(true);
     //cells[13][13]->set_alive(true);
     cells[13][16]->set_alive(true);
-    cells[14][0]->set_alive(true);
+    //cells[14][0]->set_alive(true);
     cells[14][1]->set_alive(true);
     cells[14][2]->set_alive(true);
     cells[14][3]->set_alive(true);
@@ -245,13 +486,13 @@ void MainWindow::qt_party(){
     cells[14][14]->set_alive(true);
     cells[14][15]->set_alive(true);
     cells[14][16]->set_alive(true);
-    cells[15][0]->set_alive(true);
+    cells[15][1]->set_alive(true);
     cells[15][4]->set_alive(true);
     //cells[15][7]->set_alive(true);
     cells[15][10]->set_alive(true);
     //cells[15][13]->set_alive(true);
     cells[15][16]->set_alive(true);
-    cells[16][0]->set_alive(true);
+    cells[16][1]->set_alive(true);
     //cells[16][4]->set_alive(true);
     cells[16][5]->set_alive(true);
     //cells[16][8]->set_alive(true);
@@ -259,7 +500,7 @@ void MainWindow::qt_party(){
     //cells[16][12]->set_alive(true);
     cells[16][15]->set_alive(true);
     //cells[16][16]->set_alive(true);
-    cells[17][0]->set_alive(true);
+    cells[17][1]->set_alive(true);
     //cells[17][5]->set_alive(true);
     cells[17][6]->set_alive(true);
     //cells[17][9]->set_alive(true);
@@ -267,20 +508,30 @@ void MainWindow::qt_party(){
     //cells[17][11]->set_alive(true);
     cells[17][14]->set_alive(true);
     //cells[17][15]->set_alive(true);
-    cells[18][0]->set_alive(true);
+    cells[18][1]->set_alive(true);
     //cells[18][6]->set_alive(true);
     cells[18][7]->set_alive(true);
     cells[18][10]->set_alive(true);
     cells[18][13]->set_alive(true);
     //cells[18][14]->set_alive(true);
-    cells[19][0]->set_alive(true);
+   // cells[19][1]->set_alive(true);
     //cells[19][7]->set_alive(true);
-    cells[19][8]->set_alive(true);
-    cells[19][9]->set_alive(true);
-    cells[19][10]->set_alive(true);
-    cells[19][11]->set_alive(true);
-    cells[19][12]->set_alive(true);
+    cells[18][8]->set_alive(true);
+    cells[18][9]->set_alive(true);
+    //cells[18][10]->set_alive(true);
+    cells[18][11]->set_alive(true);
+    cells[18][12]->set_alive(true);
     //cells[19][13]->set_alive(true);
+    cells[14][4]->is_gate = true;
+    cells[14][10]->is_gate = true;
+    cells[14][16]->is_gate = true;
+    cells[18][10]->is_gate = true;
+    cells[8][10]->is_gate = true;
+    cells[5][12]->is_gate = true;
+    cells[1][12]->is_gate = true;
+    cells[3][5]->is_gate = true;
+    cells[3][3]->is_gate = true;
+    cells[4][2]->is_gate = true;
 }
 //fills each cells neighbor array
 void MainWindow::calc_neighbors(){
@@ -572,6 +823,11 @@ void MainWindow::calc_neighbors(){
     return;
 }
 //function to verify corrrect neighbors chosen
+void MainWindow::testing(){
+    while(testingcount > 0){
+
+    }
+}
 void MainWindow::debug_neighbors(){
     for(int i = 0; i <= rows_;i++){
         qDebug() << "Row " << i << "/n";
@@ -589,4 +845,40 @@ void MainWindow::debug_neighbors(){
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+
+
+void MainWindow::on_continueButton_clicked()
+
+{
+    if(!test_mode){
+    testingcount--;
+    if(current_player->roll > 0){
+        continue_move = true;
+        move_player();
+        QString dir = QString::fromUtf8(current_player->get_dir().c_str());
+        qDebug() << dir;
+        qDebug() << current_player->roll;
+    }
+    else{
+        current_player->roll = 5;
+        int cid = cindex;
+        cid = cindex + 1;
+        if(cid == 4){
+            cid = 0;
+        }
+        cindex = cid;
+        current_player = players[cindex];
+        test_mode = true;
+        qDebug() << current_player->roll;
+        qDebug() << cid ;
+    }
+}
+        return;
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    test_mode = false;
 }

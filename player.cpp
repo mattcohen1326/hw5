@@ -5,9 +5,10 @@ Player::Player()
     human = false;
     coins = 0;
     stars = 0;
-    direction = "right";
-    current_col = 0;
-    current_row = 19;
+    direction = "up";
+    current_col = 1;
+    current_row = 18;
+    roll = 5;
 
 }
 

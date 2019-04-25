@@ -4,9 +4,8 @@
 #include <QGraphicsItem>
 #include <vector>
 
-class Player: public QObject, public QGraphicsItem
-{
-    Q_OBJECT
+class Player{
+
 public:
     Player();
     bool is_human(){return human;}
@@ -16,6 +15,7 @@ public:
     void set_col(int x){current_col = x;}
     std::string get_dir(){return direction;}
     void set_dir(std::string x){direction = x;}
+    int roll = 15;
 private:
     bool human;
     std::string direction; //direction for moving logic
