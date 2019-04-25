@@ -15,9 +15,14 @@ public:
     void set_col(int x){current_col = x;}
     std::string get_dir(){return direction;}
     void set_dir(std::string x){direction = x;}
-    int roll = 15;
+    QColor get_color(){return color_;}
+    void set_color(QColor x){color_ = x;}
+    int roll = 0;
+
+    int id;
 private:
     bool human;
+    QColor color_;
     std::string direction; //direction for moving logic
     int current_row;
     int current_col;

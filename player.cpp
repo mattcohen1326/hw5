@@ -8,7 +8,7 @@ Player::Player()
     direction = "up";
     current_col = 1;
     current_row = 18;
-    roll = 5;
+    roll = 0;
 
 }
 

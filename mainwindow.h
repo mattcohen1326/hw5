@@ -20,9 +20,9 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     bool continue_move = false;
-    bool test_mode = false;
     int cindex = 0;
     int testingcount = 10;
+    bool rollmode = true;
     ~MainWindow();
 
 
@@ -30,7 +30,7 @@ private slots:
 
     void on_continueButton_clicked();
 
-    void on_pushButton_clicked();
+    void on_rollButton_clicked();
 
 private:
     Player * players[4];

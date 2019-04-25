@@ -66,7 +66,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     for(int i = 0; i < 4; i++){
         players[i] = new Player();
+        players[i]->id = i+1;
     }
+    players[0]->set_color(QColor(255,0,255));
+    players[1]->set_color(QColor(102,255,255));
+    players[2]->set_color(QColor(0,255,0));
+    players[3]->set_color(QColor(100,100,100));
+
     current_player = players[0];
     qDebug() << current_player->roll;
     /*while(current_player->roll != 0){
@@ -99,7 +105,26 @@ void MainWindow::move_player(){ //logic to move one space based on what directio
     QString dir = QString::fromUtf8(current_player->get_dir().c_str());
     qDebug() <<dir;
     }
-    cells[current_player->get_row()][current_player->get_col()]->set_color(cells[current_player->get_row()][current_player->get_col()]->get_norm());
+    bool changecolor = true;
+    for(int i = 0; i < 4; i++){
+        if(current_player->id != players[i]->id){
+            if((current_player->get_row() == players[i]->get_row()) && (current_player->get_col() == players[i]->get_col())){
+                    //qDebug() << "ok";
+                    cells[current_player->get_row()][current_player->get_col()]->set_color(players[i]->get_color());
+                    changecolor = false;
+                    break;
+            }
+            else{
+                continue;
+            }
+
+        }
+
+    }
+    if(changecolor){
+         cells[current_player->get_row()][current_player->get_col()]->set_color(cells[current_player->get_row()][current_player->get_col()]->get_norm());
+    }
+
     if(current_player->get_dir() == "right"){
 
         if(cells[current_player->get_row()][current_player->get_col()+1]->is_gate){
@@ -357,8 +382,7 @@ void MainWindow::move_player(){ //logic to move one space based on what directio
     }
 
     QColor col = QColor(255,0,255);
-    current_player->roll--;
-    cells[current_player->get_row()][current_player->get_col()]->set_color(col);
+    cells[current_player->get_row()][current_player->get_col()]->set_color(current_player->get_color());
     QString crow_ = QString::number(current_player->get_row());
     QString ccol_ = QString::number(current_player->get_col());
     ui->rowLabel->setText(crow_);
@@ -852,17 +876,19 @@ MainWindow::~MainWindow()
 void MainWindow::on_continueButton_clicked()
 
 {
-    if(!test_mode){
-    testingcount--;
+    if(!rollmode){
+
     if(current_player->roll > 0){
+        current_player->roll--;
         continue_move = true;
         move_player();
         QString dir = QString::fromUtf8(current_player->get_dir().c_str());
         qDebug() << dir;
         qDebug() << current_player->roll;
+        ui->rollLabel->setNum(current_player->roll);
     }
     else{
-        current_player->roll = 5;
+
         int cid = cindex;
         cid = cindex + 1;
         if(cid == 4){
@@ -870,15 +896,41 @@ void MainWindow::on_continueButton_clicked()
         }
         cindex = cid;
         current_player = players[cindex];
-        test_mode = true;
         qDebug() << current_player->roll;
         qDebug() << cid ;
+        ui->playerLabel->setNum(cid+1);
+        ui->gateChoice->clear();
+        rollmode = true;
+        if(cells[current_player->get_row()][current_player->get_col()]->is_gate){
+            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[1]){
+                ui->gateChoice->addItem("up");
+            }
+            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[3]){
+                ui->gateChoice->addItem("left");
+            }
+            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[4]){
+                ui->gateChoice->addItem("right");
+            }
+            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[6]){
+                ui->gateChoice->addItem("down");
+            }
+
+
+        }
     }
 }
         return;
 }
 
-void MainWindow::on_pushButton_clicked()
+
+void MainWindow::on_rollButton_clicked()
 {
-    test_mode = false;
+    if(rollmode){
+     int newroll = rand()%6+1;
+     current_player->roll = newroll;
+     ui->rollLabel->setNum(newroll);
+     qDebug() << newroll;
+     rollmode = false;
+    }
+
 }

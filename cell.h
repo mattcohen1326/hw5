@@ -27,6 +27,7 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget) override;
     bool neighbors[8];
     bool is_gate = false;
+    bool has_player = false;
 private:
 
     int coin_value;
