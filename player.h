@@ -16,6 +16,7 @@ public:
     std::string get_dir(){return direction;}
     void set_dir(std::string x){direction = x;}
     int roll = 15;
+    void add_coins(int x);
 private:
     bool human;
     std::string direction; //direction for moving logic
