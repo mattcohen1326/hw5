@@ -29,6 +29,8 @@ public:
     int tictac_minigame(Player * p1, Player *p2);
     void check_tictac(Player *p1, Player *p2);
     void play();
+    void start_game();
+    bool game_started = false;
     bool firstgame = true;
 private slots:
 

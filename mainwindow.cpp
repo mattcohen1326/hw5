@@ -98,12 +98,21 @@ MainWindow::MainWindow(QWidget *parent) :
     std::string out = players[0]->get_dir();
     QString outs = QString::fromUtf8(out.c_str());
     qDebug() << outs ;
+    start_game();
     scene->update();
 
 
 }
+void MainWindow::start_game(){
+    ui->logText->setText("Chose How many human players you will have");
+    ui->gateChoice->addItem("1");
+    ui->gateChoice->addItem("2");
+    ui->gateChoice->addItem("3");
+    ui->gateChoice->addItem("4");
+
+}
 void MainWindow::move_player(){ //logic to move one space based on what direction youre going NOT FINISHED
-    if(ui->gateChoice->currentText() != ""){
+    if(ui->gateChoice->currentText() != "" && ui->gateChoice->currentText() != "1" && ui->gateChoice->currentText() != "2" && ui->gateChoice->currentText() != "3" && ui->gateChoice->currentText() != "4"){
     current_player->set_dir(ui->gateChoice->currentText().toLocal8Bit().constData());
     QString dir = QString::fromUtf8(current_player->get_dir().c_str());
     qDebug() <<dir;
@@ -935,63 +944,96 @@ void MainWindow::play(){
 void MainWindow::on_continueButton_clicked()
 
 {
+    if(game_started){
     updateDisplay();
-    if(!rollmode&&!minigamemode){
-
-    if(current_player->roll > 0){
-        current_player->roll--;
-        continue_move = true;
-        move_player();
-        QString dir = QString::fromUtf8(current_player->get_dir().c_str());
-        qDebug() << dir;
-        qDebug() << current_player->roll;
-        ui->rollLabel->setNum(current_player->roll);
-    }
-    else{
-
-        int cid = cindex;
-        cid = cindex + 1;
-        if(cid == 4){
-            ui->logText->setText("p1 and p2 play tic tac toe");
-            minigamemode = true;
-            tictac_minigame(players[0],players[1]);
-            cid = 0;
+        if(!rollmode&&!minigamemode){
+        if(current_player->roll > 0){
+            current_player->roll--;
+            continue_move = true;
+            move_player();
+            QString dir = QString::fromUtf8(current_player->get_dir().c_str());
+            qDebug() << dir;
+            qDebug() << current_player->roll;
+            ui->rollLabel->setNum(current_player->roll);
         }
         else{
-             ui->logText->setText("Roll Dice");
+            int cid = cindex;
+            cid = cindex + 1;
+            if(cid == 4){
+                ui->logText->setText("p1 and p2 play tic tac toe");
+                minigamemode = true;
+                tictac_minigame(players[0],players[1]);
+                cid = 0;
+            }
+            else{
+                 ui->logText->setText("Roll Dice");
+            }
+            rollmode = true;
+            cindex = cid;
+            current_player = players[cindex];
+            if(!current_player->is_human()){
+                on_rollButton_clicked();
+                while(current_player->roll > 0){
+                    on_continueButton_clicked();
+                }
+            }
+            qDebug() << current_player->roll;
+            qDebug() << cid ;
+            ui->playerLabel->setNum(cid+1);
+            ui->gateChoice->clear();
+            if(cells[current_player->get_row()][current_player->get_col()]->is_gate){
+                if(cells[current_player->get_row()][current_player->get_col()]->neighbors[1]){
+                    ui->gateChoice->addItem("up");
+                }
+                if(cells[current_player->get_row()][current_player->get_col()]->neighbors[3]){
+                    ui->gateChoice->addItem("left");
+                }
+                if(cells[current_player->get_row()][current_player->get_col()]->neighbors[4]){
+                    ui->gateChoice->addItem("right");
+                }
+                if(cells[current_player->get_row()][current_player->get_col()]->neighbors[6]){
+                    ui->gateChoice->addItem("down");
+                }
+
+
+            }
         }
-        rollmode = true;
-        cindex = cid;
-        current_player = players[cindex];
-        qDebug() << current_player->roll;
-        qDebug() << cid ;
-        ui->playerLabel->setNum(cid+1);
-        ui->gateChoice->clear();
-        if(cells[current_player->get_row()][current_player->get_col()]->is_gate){
-            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[1]){
-                ui->gateChoice->addItem("up");
-            }
-            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[3]){
-                ui->gateChoice->addItem("left");
-            }
-            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[4]){
-                ui->gateChoice->addItem("right");
-            }
-            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[6]){
-                ui->gateChoice->addItem("down");
-            }
-
-
         }
     }
-}
+    else{
+        if(ui->gateChoice->currentText()=="1"){
+            players[0]->set_human(true);
+        }
+        else if(ui->gateChoice->currentText()=="2"){
+            players[0]->set_human(true);
+            players[1]->set_human(true);
+        }
+        else if(ui->gateChoice->currentText()=="3"){
+            players[0]->set_human(true);
+            players[1]->set_human(true);
+            players[2]->set_human(true);
+        }
+        else{
+            players[0]->set_human(true);
+            players[1]->set_human(true);
+            players[2]->set_human(true);
+            players[3]->set_human(true);
+        }
+        qDebug() << players[0]->is_human();
+        qDebug() << players[1]->is_human();
+        qDebug() << players[2]->is_human();
+        qDebug() << players[3]->is_human();
+        game_started = true;
+
+        ui->logText->setText("Player 1 Roll Die");
+    }
         return;
 }
 
 
 void MainWindow::on_rollButton_clicked()
 {
-    if(rollmode && !minigamemode){
+    if(rollmode && !minigamemode && game_started){
      int newroll = rand()%6+1;
      current_player->roll = newroll;
      ui->rollLabel->setNum(newroll);

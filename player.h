@@ -21,7 +21,7 @@ public:
     QColor get_color(){return color_;}
     void set_color(QColor x){color_ = x;}
     int roll = 0;
-
+    void set_human(bool x){human = x;}
     int id;
     void add_coins(int x);
 private:
