@@ -26,6 +26,7 @@ public:
     QPainterPath shape() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget) override;
     bool neighbors[8];
+    bool is_star = false;
     bool is_gate = false;
     bool has_player = false;
 private:

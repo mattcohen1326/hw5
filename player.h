@@ -13,6 +13,9 @@ public:
     int get_col(){return current_col;}
     void set_row(int x){current_row = x;}
     void set_col(int x){current_col = x;}
+    int get_coins() {return coins;}
+    int get_stars() {return stars;}
+    void add_stars(){stars+=1;}
     std::string get_dir(){return direction;}
     void set_dir(std::string x){direction = x;}
     QColor get_color(){return color_;}
@@ -20,6 +23,7 @@ public:
     int roll = 0;
 
     int id;
+    void add_coins(int x);
 private:
     bool human;
     QColor color_;

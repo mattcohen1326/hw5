@@ -12,3 +12,7 @@ Player::Player()
 
 }
 
+void Player::add_coins(int x){
+    coins += x;
+}
+

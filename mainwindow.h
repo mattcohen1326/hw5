@@ -23,14 +23,26 @@ public:
     int cindex = 0;
     int testingcount = 10;
     bool rollmode = true;
+    bool minigamemode = false;
+    void updateDisplay();
     ~MainWindow();
-
-
+    int tictac_minigame(Player * p1, Player *p2);
+    void check_tictac(Player *p1, Player *p2);
+    void play();
+    bool firstgame = true;
 private slots:
 
     void on_continueButton_clicked();
-
     void on_rollButton_clicked();
+    void on_tic1_clicked();
+    void on_tic2_clicked();
+    void on_tic3_clicked();
+    void on_tic4_clicked();
+    void on_tic5_clicked();
+    void on_tic6_clicked();
+    void on_tic7_clicked();
+    void on_tic8_clicked();
+    void on_tic9_clicked();
 
 private:
     Player * players[4];
@@ -45,6 +57,10 @@ private:
     int cols_;
     void debug_neighbors();
     void move_player();
+    bool min_game_current;
+    Player *minp1;
+    Player *minp2;
+    int counter = 0;
 
 
 };
