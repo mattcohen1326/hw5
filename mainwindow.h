@@ -26,8 +26,8 @@ public:
     bool minigamemode = false;
     void updateDisplay();
     ~MainWindow();
-    int tictac_minigame(Player * p1, Player *p2);
-    void check_tictac(Player *p1, Player *p2);
+    void tictac_minigame(Player * p1, Player *p2);
+    int check_tictac(Player *p1, Player *p2);
     void play();
     void start_game();
     bool game_started = false;
