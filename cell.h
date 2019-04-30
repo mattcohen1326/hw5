@@ -3,7 +3,14 @@
 #include <QColor>
 #include <QGraphicsItem>
 #include <vector>
+#include <player.h>
 
+struct cellBuilding{
+    Player * p;
+    bool toll_built = false;
+    bool castle_built = false;
+
+};
 
 class Cell: public QObject, public QGraphicsItem
 {
@@ -29,8 +36,9 @@ public:
     bool is_star = false;
     bool is_gate = false;
     bool has_player = false;
-private:
 
+private:
+    cellBuilding status;
     int coin_value;
     QColor color_;
     QColor norm_color;

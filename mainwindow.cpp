@@ -76,28 +76,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     current_player = players[0];
     qDebug() << current_player->roll;
-    /*while(current_player->roll != 0){
-        qDebug() << "HERE";
-        if(!cells[current_player->get_row()][current_player->get_col()]->is_gate){
-            qDebug() << "OKKKK";
-            move_player(players[0]);
-            current_player->roll--;
-        }
-        else{
-            continue_move = true;
-            qDebug() << "FUCK" ;
-            move_player(players[0]);
-            current_player->roll--;
-        }
-       qDebug() << "ROLL" << current_player->roll;
-    }*/
-
-    //std::string out = "yay";
     cells[1][8]->is_star = true;
     cells[1][8]->set_color(QColor(255,255,0));
     std::string out = players[0]->get_dir();
     QString outs = QString::fromUtf8(out.c_str());
-    qDebug() << outs ;
+    //qDebug() << outs ;
     start_game();
     scene->update();
 
@@ -115,7 +98,14 @@ void MainWindow::move_player(){ //logic to move one space based on what directio
     if(ui->gateChoice->currentText() != "" && ui->gateChoice->currentText() != "1" && ui->gateChoice->currentText() != "2" && ui->gateChoice->currentText() != "3" && ui->gateChoice->currentText() != "4"){
     current_player->set_dir(ui->gateChoice->currentText().toLocal8Bit().constData());
     QString dir = QString::fromUtf8(current_player->get_dir().c_str());
-    qDebug() <<dir;
+    //qDebug() <<dir;
+    }
+    if(!current_player->is_human()){
+        for(int i = 0; i < ui->gateChoice->count();i++){
+            if(current_player->get_first() == ui->gateChoice->itemText(i).toUtf8().constData()){
+                    current_player->set_dir(ui->gateChoice->itemText(i).toUtf8().constData());
+            }
+    }
     }
     bool changecolor = true;
     for(int i = 0; i < 4; i++){
@@ -148,41 +138,6 @@ void MainWindow::move_player(){ //logic to move one space based on what directio
         else if(cells[current_player->get_row()+1][current_player->get_col()]->is_gate){
              current_player->set_row(current_player->get_row()+1);
         }
-
-        /*else if(cells[current_player->get_row()][current_player->get_col()]->is_gate){
-            //Output "Choices"
-            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[1]){
-                    qDebug() << "UP";
-                    ui->gateChoice->addItem("up");
-            }
-            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[3]){
-                qDebug() << "LEFT";
-                ui->gateChoice->addItem("left");
-            }
-            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[4]){
-                qDebug() << "RIGHT";
-                ui->gateChoice->addItem("right");
-            }
-            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[6]){
-                qDebug() << "DOWN";
-                ui->gateChoice->addItem("down");
-            }
-            if(continue_move){
-                if(ui->gateChoice->currentText() == "right"){
-                    current_player->set_col(current_player->get_col()+1);
-                }
-                else if(ui->gateChoice->currentText() == "up"){
-                    current_player->set_row(current_player->get_row()-1);
-                }
-                else if(ui->gateChoice->currentText() == "left"){
-                    current_player->set_col(current_player->get_col()-1);
-                }
-                else if(ui->gateChoice->currentText() == "down"){
-                    current_player->set_row(current_player->get_row()+1);
-                }
-            }
-
-        }*/
         else{
             if(cells[current_player->get_row()][current_player->get_col()]->neighbors[4]){
                 current_player->set_col(current_player->get_col()+1);
@@ -217,21 +172,6 @@ void MainWindow::move_player(){ //logic to move one space based on what directio
         else if(cells[current_player->get_row()+1][current_player->get_col()]->is_gate){
             current_player->set_row(current_player->get_row()+1);
         }
-        /*else if(cells[current_player->get_row()][current_player->get_col()]->is_gate){
-            //Output "Choices"
-            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[1]){
-                    qDebug() << "UP";
-            }
-            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[3]){
-                qDebug() << "LEFT";
-            }
-            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[4]){
-                qDebug() << "RIGHT";
-            }
-            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[6]){
-                qDebug() << "DOWN";
-            }
-        }*/
         else{
             if(cells[current_player->get_row()][current_player->get_col()]->neighbors[3]){
                 current_player->set_col(current_player->get_col()-1);
@@ -268,21 +208,6 @@ void MainWindow::move_player(){ //logic to move one space based on what directio
         else if(cells[current_player->get_row()][current_player->get_col()+1]->is_gate){
             current_player->set_col(current_player->get_col()+1);
         }
-        /*else if(cells[current_player->get_row()][current_player->get_col()]->is_gate){
-            //Output "Choices"
-            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[1]){
-                    qDebug() << "UP";
-            }
-            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[3]){
-                qDebug() << "LEFT";
-            }
-            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[4]){
-                qDebug() << "RIGHT";
-            }
-            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[6]){
-                qDebug() << "DOWN";
-            }
-        }*/
         else{
             if(cells[current_player->get_row()][current_player->get_col()]->neighbors[1]){
                 current_player->set_row(current_player->get_row()-1);
@@ -329,21 +254,6 @@ void MainWindow::move_player(){ //logic to move one space based on what directio
         else if(cells[current_player->get_row()][current_player->get_col()+1]->is_gate){
             current_player->set_col(current_player->get_col()+1);
         }
-        /*else if(cells[current_player->get_row()][current_player->get_col()]->is_gate){
-            //Output "Choices"
-            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[1]){
-                    qDebug() << "UP";
-            }
-            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[3]){
-                qDebug() << "LEFT";
-            }
-            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[4]){
-                qDebug() << "RIGHT";
-            }
-            if(cells[current_player->get_row()][current_player->get_col()]->neighbors[6]){
-                qDebug() << "DOWN";
-            }
-        }*/
         else{
             if(cells[current_player->get_row()][current_player->get_col()]->neighbors[6]){
                 current_player->set_row(current_player->get_row()+1);
@@ -375,16 +285,24 @@ void MainWindow::move_player(){ //logic to move one space based on what directio
     int ccol = current_player->get_col();
     if(cells[current_player->get_row()][current_player->get_col()]->is_gate){
         if(cells[crow][ccol]->neighbors[1]){
-            ui->gateChoice->addItem("up");
+            if(current_player->get_dir()!="down"){
+                ui->gateChoice->addItem("up");
+            }
         }
         if(cells[crow][ccol]->neighbors[3]){
-            ui->gateChoice->addItem("left");
+            if(current_player->get_dir()!="right"){
+                ui->gateChoice->addItem("left");
+            }
         }
         if(cells[crow][ccol]->neighbors[4]){
-            ui->gateChoice->addItem("right");
+            if(current_player->get_dir()!="left"){
+                ui->gateChoice->addItem("right");
+            }
         }
         if(cells[crow][ccol]->neighbors[6]){
-            ui->gateChoice->addItem("down");
+            if(current_player->get_dir()!="up"){
+                ui->gateChoice->addItem("down");
+            }
         }
 
 
@@ -393,7 +311,7 @@ void MainWindow::move_player(){ //logic to move one space based on what directio
         ui->gateChoice->clear();
     }
 
-    QColor col = QColor(255,0,255);
+    //QColor col = QColor(255,0,255);
     cells[current_player->get_row()][current_player->get_col()]->set_color(current_player->get_color());
     QString crow_ = QString::number(current_player->get_row());
     QString ccol_ = QString::number(current_player->get_col());
@@ -401,11 +319,12 @@ void MainWindow::move_player(){ //logic to move one space based on what directio
     ui->colLabel->setText(ccol_);
     if(current_player->roll == 0){
         current_player->add_coins(cells[current_player->get_row()][current_player->get_col()]->get_coins());
-        if(cells[current_player->get_row()][current_player->get_col()]->is_star){
+    }
+    if(cells[current_player->get_row()][current_player->get_col()]->is_star){
             current_player->add_stars();
             cells[current_player->get_row()][current_player->get_col()]->is_star =false;
             cells[current_player->get_row()][current_player->get_col()]->set_color(cells[current_player->get_row()][current_player->get_col()]->get_norm());
-            Cell * temp = new Cell();
+            Cell * temp;
             srand(time(0));
             int trow = 0;
             int tcol = 0;
@@ -417,9 +336,21 @@ void MainWindow::move_player(){ //logic to move one space based on what directio
             cells[trow][tcol]->is_star = true;
             QColor yel = QColor(255,255,0);
             cells[trow][tcol]->set_color(yel);
-
-        }
+            qDebug() << "STAR ROW :" << trow;
+            qDebug() << "STAR COL :" << tcol;
+            for(int i = 0; i < 4; i++){
+                if(!players[i]->is_human()){
+                    if(tcol < 10){
+                        players[i]->set_first("left");
+                    }
+                    else{
+                        players[i]->set_first("right");
+                    }
+                }
+            }
     }
+
+
     scene->update();
     return;
 
@@ -952,8 +883,8 @@ void MainWindow::on_continueButton_clicked()
             continue_move = true;
             move_player();
             QString dir = QString::fromUtf8(current_player->get_dir().c_str());
-            qDebug() << dir;
-            qDebug() << current_player->roll;
+           // qDebug() << dir;
+            //qDebug() << current_player->roll;
             ui->rollLabel->setNum(current_player->roll);
         }
         else{
@@ -977,8 +908,8 @@ void MainWindow::on_continueButton_clicked()
                     on_continueButton_clicked();
                 }
             }
-            qDebug() << current_player->roll;
-            qDebug() << cid ;
+            //qDebug() << current_player->roll;
+            //qDebug() << cid ;
             ui->playerLabel->setNum(cid+1);
             ui->gateChoice->clear();
             if(cells[current_player->get_row()][current_player->get_col()]->is_gate){
@@ -1019,10 +950,10 @@ void MainWindow::on_continueButton_clicked()
             players[2]->set_human(true);
             players[3]->set_human(true);
         }
-        qDebug() << players[0]->is_human();
-        qDebug() << players[1]->is_human();
-        qDebug() << players[2]->is_human();
-        qDebug() << players[3]->is_human();
+        //qDebug() << players[0]->is_human();
+        //qDebug() << players[1]->is_human();
+        //qDebug() << players[2]->is_human();
+        //qDebug() << players[3]->is_human();
         game_started = true;
 
         ui->logText->setText("Player 1 Roll Die");
@@ -1037,7 +968,7 @@ void MainWindow::on_rollButton_clicked()
      int newroll = rand()%6+1;
      current_player->roll = newroll;
      ui->rollLabel->setNum(newroll);
-     qDebug() << newroll;
+     //qDebug() << newroll;
      rollmode = false;
      ui->logText->setText("press continue until out of moves");
     }
@@ -1059,7 +990,7 @@ int MainWindow::tictac_minigame(Player *p1, Player *p2){
     ui->tic9->setText("9");
     minp1 = p1;
     minp2 = p2;
-
+    return 0;
 }
 
 void MainWindow::check_tictac(Player *p1, Player *p2){

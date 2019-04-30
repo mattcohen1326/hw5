@@ -31,6 +31,7 @@ public:
     void play();
     void start_game();
     bool game_started = false;
+    bool use_item = false;
     bool firstgame = true;
 private slots:
 

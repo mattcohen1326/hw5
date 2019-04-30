@@ -4,6 +4,7 @@
 #include <iostream>
 #include <QtWidgets>
 #include "cell.h"
+#include <player.h>
 
 Cell::Cell()
 {
