@@ -925,6 +925,7 @@ void MainWindow::on_continueButton_clicked()
                 minigamemode = true;
                 qDebug() << players[0]->is_human();
                 qDebug() << players[1]->is_human();
+                //players[3]->add_coins(10);
                 tictac_minigame(players[0],players[1]);
                 cid = 0;
             }
@@ -1309,7 +1310,6 @@ int MainWindow::check_tictac(Player *p1, Player *p2){
            else if (ui->tic3->text() == ui->tic5->text() && ui->tic5->text() == ui->tic7->text() && ui->tic7->text()=="X"){
                state =  0;
                }
-
            //qDebug() << state;
            if(state == 0){
                p1->add_coins(10);
@@ -1335,7 +1335,26 @@ int MainWindow::check_tictac(Player *p1, Player *p2){
                    return 1;
                }
            }
+//           if(state == 0 && p1->is_human()){
+//               p1->add_coins(10);
+//               ui->logText->setText("p1 win");
 
+//               //ui->tictac->hide();
+
+//               if(firstgame){
+
+//                   ui->logText->setText("p1 win : p3 and p4 play next game");
+//                   tictac_minigame(players[1],players[2]);
+//                   firstgame = false;
+//               }
+//               else{
+//                    ui->logText->setText("p1 win : roll die");
+//                   firstgame = true;
+//                   minigamemode = false;
+//                   rollmode = true;
+//               }
+//               return 1;
+//           }
    //check p2 win
            if (ui->tic1->text() == ui->tic2->text() && ui->tic2->text() == ui->tic3->text() && ui->tic3->text()=="O"){
 
@@ -1368,7 +1387,6 @@ int MainWindow::check_tictac(Player *p1, Player *p2){
            else if (ui->tic3->text() == ui->tic5->text() && ui->tic5->text() == ui->tic7->text() && ui->tic7->text()=="O"){
                state =  1;
                }
-
         //qDebug() << state;
         if(state == 0){
             p1->add_coins(10);
@@ -1388,10 +1406,14 @@ int MainWindow::check_tictac(Player *p1, Player *p2){
             }
             else{
                 ui->logText->setText("p1 win : roll die");
-                firstgame = true;
-                minigamemode = false;
-                rollmode = true;
+                counter = 0;
+                firstgame = false;
+                min_game_current = 0;
+                tictac_minigame(players[2],players[3]);
+                counter = 0;
+                firstgame = false;
                 return 1;
+
             }
 
         }
@@ -1406,8 +1428,11 @@ int MainWindow::check_tictac(Player *p1, Player *p2){
                 firstgame = false;
                 min_game_current = 0;
                 //tictac_minigame(players[2],players[3]);
-                firstgame = false;
+                //firstgame = false;
                 counter = 0;
+                //tictac_minigame(players[2],players[3]);
+                firstgame = false;
+                //counter = 0;
                 return 1;
             }
             else{
@@ -1661,3 +1686,4 @@ void MainWindow::on_simulateButton_clicked()
     }
 
 }
+
