@@ -14,26 +14,26 @@ Player::Player()
 }
 
 void Player::add_coins(int x){
-    coins += x;
+    coins = coins + x;
 }
 
 void Player::itemFactory(){
     srand(time(0));
     int item_2 = rand()%2+1;
     int item_3 = rand()%2+1;
-    //items[0] = Hammer();
+    items[0] = new Hammer();
     if(item_2 == 1){
-        items[1] = Mushroom(true);
+        items[1] = new Mushroom(true);
 
     }
     else{
-        items[1] = Mushroom(false);
+        items[1] = new Mushroom(false);
     }
     if(item_3 == 1){
-        items[2] = Mushroom(true);
+        items[2] = new Mushroom(true);
     }
     else{
-        items[2] = Mushroom(false);
+        items[2] = new Mushroom(false);
     }
 
 }

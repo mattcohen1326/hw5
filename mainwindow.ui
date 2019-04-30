@@ -398,6 +398,19 @@
      <string>Player 1</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="simulateButton">
+    <property name="geometry">
+     <rect>
+      <x>850</x>
+      <y>510</y>
+      <width>93</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Simulate</string>
+    </property>
+   </widget>
    <zorder>graphicsView</zorder>
    <zorder>gameLog</zorder>
    <zorder>gateChoice</zorder>
@@ -415,6 +428,7 @@
    <zorder>logText</zorder>
    <zorder>rollLabel</zorder>
    <zorder>playerLabel</zorder>
+   <zorder>simulateButton</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

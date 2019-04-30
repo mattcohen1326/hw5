@@ -6,3 +6,11 @@ Item::Item(){
 Item::~Item(){
 
 }
+
+Hammer::~Hammer(){
+
+}
+
+Mushroom::~Mushroom(){
+
+}

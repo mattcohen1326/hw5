@@ -8,7 +8,7 @@
 #include <QMainWindow>
 #include <QTimer>
 #include "cell.h"
-#include "player.h"
+#include <player.h>
 namespace Ui {
 class MainWindow;
 }
@@ -26,13 +26,16 @@ public:
     bool minigamemode = false;
     void updateDisplay();
     ~MainWindow();
-    int tictac_minigame(Player * p1, Player *p2);
-    void check_tictac(Player *p1, Player *p2);
+    void tictac_minigame(Player * p1, Player *p2);
+    int check_tictac(Player *p1, Player *p2);
     void play();
     void start_game();
     bool game_started = false;
     bool use_item = false;
     bool firstgame = true;
+    bool beginning = true;
+    void reset_tic();
+    void simulate();
 private slots:
 
     void on_continueButton_clicked();
@@ -47,7 +50,10 @@ private slots:
     void on_tic8_clicked();
     void on_tic9_clicked();
 
+    void on_simulateButton_clicked();
+
 private:
+    int turns = 15;
     Player * players[4];
     Player * current_player;
     Ui::MainWindow *ui;

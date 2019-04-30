@@ -28,8 +28,9 @@ public:
     int roll = 0;
     void set_human(bool x){human = x;}
     int id;
+    void clear_stars(){stars = 0;}
     void add_coins(int x);
-    Item items[3];
+    Item * items[3];
 private:
     std::string first_choice = "";
     bool human;
