@@ -962,7 +962,10 @@ void MainWindow::on_continueButton_clicked()
             if(cid == 4){
                 ui->logText->setText("p1 and p2 play tic tac toe");
                 minigamemode = true;
+                players[3]->add_coins(10);
+
                 tictac_minigame(players[0],players[1]);
+
                 cid = 0;
             }
             else{
@@ -1048,44 +1051,40 @@ void MainWindow::tictac_minigame(Player *p1, Player *p2){
     min_game_current = 0;
     ui->tictac->show();
     counter = 0;
-    ui->tic1->setText("1");
-    ui->tic2->setText("2");
-    ui->tic3->setText("3");
-    ui->tic4->setText("4");
-    ui->tic5->setText("5");
-    ui->tic6->setText("6");
-    ui->tic7->setText("7");
-    ui->tic8->setText("8");
-    ui->tic9->setText("9");
+    reset_tic();
     minp1 = p1;
     minp2 = p2;
     int r = (rand()%4)+1;
-    p2->set_human(false);
+//    p1->set_human(false);
+//    p2->set_human(true);
 
     // ai randomizer
-    if(r == 1 &&!p1->is_human()&& ui->tic5->text()!="X" && ui->tic5->text()!="O"){
+
+    if(!p2->is_human() && !p1->is_human()){
+    if(r == 1 && !p1->is_human()&& ui->tic5->text()!="X" && ui->tic5->text()!="O"){
         ui->tic5->setText("X");
         counter ++;
         min_game_current = !min_game_current;
     }
-    else if (r == 2 &&!p1->is_human()&& ui->tic1->text()!="X" && ui->tic1->text()!="O") {
+    else if (r == 2 && !p1->is_human()&& ui->tic1->text()!="X" && ui->tic1->text()!="O") {
         ui->tic1->setText("X");
         counter ++;
         min_game_current = !min_game_current;
     }
-    else if (r == 3 &&!p1->is_human()&& ui->tic4->text()!="X" && ui->tic4->text()!="O") {
+    else if (r == 3 && !p1->is_human()&& ui->tic4->text()!="X" && ui->tic4->text()!="O") {
         ui->tic4->setText("X");
         counter ++;
         min_game_current = !min_game_current;
     }
-    else if (r == 4 &&!p1->is_human()&& ui->tic2->text()!="X" && ui->tic2->text()!="O") {
+    else if (r == 4 && !p1->is_human()&& ui->tic2->text()!="X" && ui->tic2->text()!="O") {
         ui->tic2->setText("X");
         counter ++;
         min_game_current = !min_game_current;
     }
+    }
 
     //ai vs ai
-    if(!p2->is_human()&& !p1->is_human()){
+    if(!p2->is_human() && !p1->is_human()){
         for(int i = 0; i<9 ;i++){
             if(!p1->is_human() && min_game_current == 0){
                if(ui->tic1->text()=="1"){
@@ -1134,7 +1133,10 @@ void MainWindow::tictac_minigame(Player *p1, Player *p2){
 
                }
             }
-            check_tictac(p1,p2);
+            if(check_tictac(p1,p2)==1){
+                break;
+            }
+
 
 
                if(!p2->is_human() && min_game_current == 1){
@@ -1184,7 +1186,9 @@ void MainWindow::tictac_minigame(Player *p1, Player *p2){
 
                    }
                }
-               check_tictac(p1,p2);
+               if (check_tictac(p1,p2)==1){
+                   break;
+               }
 
 
         }
@@ -1194,52 +1198,60 @@ void MainWindow::tictac_minigame(Player *p1, Player *p2){
 
 int MainWindow::check_tictac(Player *p1, Player *p2){
     int state = -1; //counts winning player
-
-    if(!p1->is_human()&& p2->is_human() && min_game_current == 1){
-       if(ui->tic1->text()=="1"){
-           ui->tic1->setText("X");
-           min_game_current = !min_game_current;
-           counter++;
-       }
-       else if(ui->tic2->text()=="2"){
-           ui->tic2->setText("X");
-           min_game_current = !min_game_current;
-           counter++;
-       }
-       else if(ui->tic3->text()=="3"){
-           ui->tic3->setText("X");
-           min_game_current = !min_game_current;
-           counter++;
-       }
-       else if(ui->tic4->text()=="4"){
-           ui->tic4->setText("X");
-           min_game_current = !min_game_current;
-           counter++;
-       }
-       else if(ui->tic6->text()=="6"){
-           ui->tic6->setText("X");
-           min_game_current = !min_game_current;
-           counter++;
-       }
-       else if(ui->tic7->text()=="7"){
-           ui->tic7->setText("X");
-           min_game_current = !min_game_current;
-           counter++;
-       }
-       else if(ui->tic8->text()=="8"){
-           ui->tic8->setText("X");
-           min_game_current = !min_game_current;
-           counter++;
-       }
-       else if(ui->tic9->text()=="9"){
-           ui->tic9->setText("X");
-           min_game_current = !min_game_current;
-           counter++;
-       }
-    }
+    counter ++;
+    //qDebug() << "countbelow";
 
 
-       if(!p2->is_human()&& p1->is_human() && min_game_current == 0){
+//    if(!p1->is_human()&& p2->is_human() && min_game_current == 1){
+//       if(ui->tic1->text()=="1"){
+//           ui->tic1->setText("X");
+//           min_game_current = !min_game_current;
+//           counter++;
+//       }
+//       else if(ui->tic2->text()=="2"){
+//           ui->tic2->setText("X");
+//           min_game_current = !min_game_current;
+//           counter++;
+//       }
+//       else if(ui->tic3->text()=="3"){
+//           ui->tic3->setText("X");
+//           min_game_current = !min_game_current;
+//           counter++;
+//       }
+//       else if(ui->tic4->text()=="4"){
+//           ui->tic4->setText("X");
+//           min_game_current = !min_game_current;
+//           counter++;
+//       }
+//       else if(ui->tic5->text()=="5"){
+//           ui->tic5->setText("X");
+//           min_game_current = !min_game_current;
+//           counter++;
+//       }
+//       else if(ui->tic6->text()=="6"){
+//           ui->tic6->setText("X");
+//           min_game_current = !min_game_current;
+//           counter++;
+//       }
+//       else if(ui->tic7->text()=="7"){
+//           ui->tic7->setText("X");
+//           min_game_current = !min_game_current;
+//           counter++;
+//       }
+//       else if(ui->tic8->text()=="8"){
+//           ui->tic8->setText("X");
+//           min_game_current = !min_game_current;
+//           counter++;
+//       }
+//       else if(ui->tic9->text()=="9"){
+//           ui->tic9->setText("X");
+//           min_game_current = !min_game_current;
+//           counter++;
+//       }
+//    }
+
+
+       if(!p2->is_human() && p1->is_human() && min_game_current == 0){
            //delay();
            if(ui->tic1->text()=="1"){
                ui->tic1->setText("O");
@@ -1258,6 +1270,11 @@ int MainWindow::check_tictac(Player *p1, Player *p2){
            }
            else if(ui->tic4->text()=="4"){
                ui->tic4->setText("O");
+               min_game_current = !min_game_current;
+               counter++;
+           }
+           else if(ui->tic5->text()=="5"){
+               ui->tic5->setText("O");
                min_game_current = !min_game_current;
                counter++;
            }
@@ -1318,32 +1335,27 @@ int MainWindow::check_tictac(Player *p1, Player *p2){
                state =  0;
                }
 
-           if(state == 0 && p1->is_human()){
-               p1->add_coins(10);
-               ui->logText->setText("p1 win");
-               ui->tictac->hide();
-               return 0;
 
+//           if(state == 0 && p1->is_human()){
+//               p1->add_coins(10);
+//               ui->logText->setText("p1 win");
 
-           }
-           if(state == 0 && p1->is_human()){
-               p2->add_coins(10);
-               ui->logText->setText("p2 win");
-               ui->tictac->hide();
-               if(firstgame){
+//               //ui->tictac->hide();
 
-                   ui->logText->setText("p2 win : p3 and p4 play next game");
-                   tictac_minigame(players[2],players[3]);
-                   firstgame = false;
-               }
-               else{
-                    ui->logText->setText("p2 win : roll die");
-                   firstgame = true;
-                   minigamemode = false;
-                   rollmode = true;
-               }
-               return 1;
-           }
+//               if(firstgame){
+
+//                   ui->logText->setText("p1 win : p3 and p4 play next game");
+//                   tictac_minigame(players[1],players[2]);
+//                   firstgame = false;
+//               }
+//               else{
+//                    ui->logText->setText("p1 win : roll die");
+//                   firstgame = true;
+//                   minigamemode = false;
+//                   rollmode = true;
+//               }
+//               return 1;
+//           }
 
    //check p2 win
            if (ui->tic1->text() == ui->tic2->text() && ui->tic2->text() == ui->tic3->text() && ui->tic3->text()=="O"){
@@ -1378,60 +1390,82 @@ int MainWindow::check_tictac(Player *p1, Player *p2){
                state =  1;
                }
 
-
+        qDebug() << state;
         if(state == 0){
-            p2->add_coins(10);
-            ui->logText->setText("p2 win");
+            p1->add_coins(10);
             ui->tictac->hide();
+            reset_tic();
             if(firstgame){
 
-                ui->logText->setText("p2 win : p3 and p4 play next game");
-                tictac_minigame(players[2],players[3]);
+                ui->logText->setText("p1 win : p3 and p4 play next game");
+
+                counter = 0;
                 firstgame = false;
+                min_game_current = 0;
+                tictac_minigame(players[2],players[3]);
+                counter = 0;
+                firstgame = false;
+                return 1;
+
             }
             else{
-                 ui->logText->setText("p2 win : roll die");
+                 ui->logText->setText("p1 win : roll die");
                 firstgame = true;
                 minigamemode = false;
                 rollmode = true;
+                return 1;
             }
-            return 1;
+
 
 
 
 
         }
         else if(state == 1){
-            p1->add_coins(10);
+            p2->add_coins(10);
             ui->tictac->hide();
+            //ui->logText->setText("p2 win : roll die");
+            reset_tic();
             if(firstgame){
-                ui->logText->setText("p1 win : p3 and p4 play next game");
+                ui->logText->setText("p2 win : p3 and p4 play next game");
+                counter = 0;
+                firstgame = false;
+                min_game_current = 0;
                 tictac_minigame(players[2],players[3]);
                 firstgame = false;
+                counter = 0;
+
+                return 1;
             }
             else{
-                ui->logText->setText("p1 win : roll die");
+                ui->logText->setText("p2 win : roll die");
                 firstgame = true;
                 minigamemode = false;
                 rollmode = true;
+                counter = 0;
+                return 1;
 
             }
-            return 1;
+
 
 
 
         }
-        else {
-            counter ++;
-        }
-        if(counter == 9){
+
+        else if(counter >= 9 && state == -1){
             p1->add_coins(5);
             p2->add_coins(5);
-            ui->tictac->hide();
+            reset_tic();
+            //ui->tictac->hide();
             if(firstgame){
                 ui->logText->setText("Tied Game : p3 and p4 play next game");
+                counter = 0;
+                firstgame = false;
+                min_game_current = 0;
                 tictac_minigame(players[2],players[3]);
                 firstgame = false;
+
+                counter = 0;
                 return 1;
             }
             else{
@@ -1439,6 +1473,7 @@ int MainWindow::check_tictac(Player *p1, Player *p2){
                 firstgame = true;
                 minigamemode = false;
                 rollmode = true;
+                counter = 0;
                 return 1;
             }
 
@@ -1446,24 +1481,32 @@ int MainWindow::check_tictac(Player *p1, Player *p2){
 
         }
 
+
+
 }
 
 
 
 void MainWindow::on_tic1_clicked()
 {
+
     if(ui->tic1->text()!="X" &&ui->tic1->text()!="O"){
         if(min_game_current == 0 ){
             ui->tic1->setText("X");
             check_tictac(minp1, minp2);
             min_game_current = !min_game_current;
         }
-        if(min_game_current == 1 ){
+        else if(min_game_current == 1 ){
             ui->tic1->setText("O");
             check_tictac(minp1, minp2);
             min_game_current = !min_game_current;
         }
     }
+    qDebug() << "countbelow";
+    qDebug() << counter;
+
+    qDebug() <<"currentp";
+    qDebug() << min_game_current;
 
 
 }
@@ -1482,6 +1525,8 @@ void MainWindow::on_tic2_clicked()
             min_game_current = !min_game_current;
         }
     }
+    qDebug() << "countbelow";
+    qDebug() << counter;
 
 }
 
@@ -1532,6 +1577,7 @@ void MainWindow::on_tic5_clicked()
         }
     }
 
+
 }
 
 void MainWindow::on_tic6_clicked()
@@ -1548,6 +1594,7 @@ void MainWindow::on_tic6_clicked()
             min_game_current = !min_game_current;
         }
     }
+
 
 }
 
@@ -1566,6 +1613,7 @@ void MainWindow::on_tic7_clicked()
         }
     }
 
+
 }
 
 void MainWindow::on_tic8_clicked()
@@ -1582,7 +1630,6 @@ void MainWindow::on_tic8_clicked()
             min_game_current = !min_game_current;
         }
     }
-
 }
 
 void MainWindow::on_tic9_clicked()
@@ -1599,4 +1646,16 @@ void MainWindow::on_tic9_clicked()
             min_game_current = !min_game_current;
         }
     }
+}
+
+void MainWindow::reset_tic(){
+    ui->tic1->setText("1");
+    ui->tic2->setText("2");
+    ui->tic3->setText("3");
+    ui->tic4->setText("4");
+    ui->tic5->setText("5");
+    ui->tic6->setText("6");
+    ui->tic7->setText("7");
+    ui->tic8->setText("8");
+    ui->tic9->setText("9");
 }

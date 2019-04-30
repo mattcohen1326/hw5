@@ -32,6 +32,7 @@ public:
     void start_game();
     bool game_started = false;
     bool firstgame = true;
+    void reset_tic();
 private slots:
 
     void on_continueButton_clicked();
