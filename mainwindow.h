@@ -34,8 +34,13 @@ public:
     bool use_item = false;
     bool firstgame = true;
     bool beginning = true;
+    bool tictac = true;
     void reset_tic();
     void simulate();
+    void most_coins();
+    void calculate_winner();
+    void update_graph(QGraphicsView * view2);
+
 private slots:
 
     void on_continueButton_clicked();
@@ -49,27 +54,38 @@ private slots:
     void on_tic7_clicked();
     void on_tic8_clicked();
     void on_tic9_clicked();
+    void guesser_game(Player *p1, Player *p2);
 
     void on_simulateButton_clicked();
 
+    void on_checkGuess_clicked();
+
+    void on_useItem_clicked();
+
 private:
-    int turns = 15;
+    int turns = 20;
     Player * players[4];
     Player * current_player;
+    Player * winner;
     Ui::MainWindow *ui;
     QGraphicsScene *scene;
+    QGraphicsScene *scene2;
+    QGraphicsView * chartview;
+    void simulate_turn();
     Cell * cells[20][20];
+    bool itemsfilled;
     void testing();
     void qt_party();
     void calc_neighbors();
-    int rows_;
-    int cols_;
+    int rows_ = 19;
+    int cols_ = 19;
     void debug_neighbors();
     void move_player();
     bool min_game_current;
     Player *minp1;
     Player *minp2;
     int counter = 0;
+    int guess_answer;
 
 
 };

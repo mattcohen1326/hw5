@@ -22,18 +22,22 @@ void Player::itemFactory(){
     int item_2 = rand()%2+1;
     int item_3 = rand()%2+1;
     items[0] = new Hammer();
+    items[0]->name = "Hammer";
     if(item_2 == 1){
         items[1] = new Mushroom(true);
-
+        items[1]->name = "Large Mushroom";
     }
     else{
         items[1] = new Mushroom(false);
+        items[1]->name = "Small Mushroom";
     }
     if(item_3 == 1){
         items[2] = new Mushroom(true);
+        items[2]->name = "Large Mushroom";
     }
     else{
         items[2] = new Mushroom(false);
+        items[2]->name = "Small Mushroom";
     }
 
 }

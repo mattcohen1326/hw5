@@ -8,9 +8,11 @@ class Item
 public:
     Item();
     virtual ~Item();
+    bool used_;
+    QString name;
     //virtual void use();
 protected:
-    bool used_;
+
 };
 
 class Mushroom: public Item

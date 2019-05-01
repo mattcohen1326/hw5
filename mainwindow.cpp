@@ -13,71 +13,18 @@ MainWindow::MainWindow(QWidget *parent) :
     scene = new QGraphicsScene; //make a new scene
     QGraphicsView * view = ui->graphicsView;
     view->setScene(scene); //make the graphics  view the scene
-    srand(time(0)); //initialize random
-    rows_ = 19;
-    cols_ = 19;
-    ui->tictac->setVisible(false);
-    int alive_dead =0;
-    for(int i = 0; i <= rows_; i++){
-        for(int j = 0;j<= cols_;j++){
-            cells[i][j] = new Cell();
-            cells[i][j]->set_row(i*40);
-            cells[i][j]->set_col(j*40);
-            alive_dead = rand()%15+0;
-            scene->addItem(cells[i][j]);
-            if(alive_dead == 1){
-                cells[i][j]->set_coin(-5);
-            }
-            else{
-                cells[i][j]->set_coin(10);
-            }
-        }
-    }
+    scene2 = new QGraphicsScene;
+    QGraphicsView * view2 = ui->minigame;
+    view2->setScene(scene2);
 
+    chartview = view2;//initialize random
+    ui->tictac->hide();
+    ui->guesserGame_2->hide();
+    ui->graphLayout->setVisible(false);
     qt_party();
     calc_neighbors();
-    //set spaces that are gates (chose which way you go)
-
-    //debug_neighbors();
-    for(int i = 0; i <= rows_;i++){
-        for(int j = 0; j<= cols_;j++){
-            if(cells[i][j]->is_alive()){
-                QColor color;
-                if(cells[i][j]->get_coins() > 0){
-                    color = QColor(0,0,255);
-
-                }
-                else{
-                    color = QColor(255,0,0);
-                }
-                if(cells[i][j]->is_gate){
-                    color = QColor(255,255,255);
-
-                }
-                cells[i][j]->set_color(color);
-                cells[i][j]->set_norm(color);
-            }
-            else{
-                QColor color = QColor(211,211,211);
-                cells[i][j]->set_color(color);
-                cells[i][j]->set_norm(color);
-            }
-        }
-    }
-
-    for(int i = 0; i < 4; i++){
-        players[i] = new Player();
-        players[i]->id = i+1;
-    }
-    players[0]->set_color(QColor(255,0,255));
-    players[1]->set_color(QColor(102,255,255));
-    players[2]->set_color(QColor(0,255,0));
-    players[3]->set_color(QColor(100,100,100));
-
     current_player = players[0];
     //qDebug() << current_player->roll;
-    cells[1][8]->is_star = true;
-    cells[1][8]->set_color(QColor(255,255,0));
     //qDebug() << outs ;
     start_game();
     scene->update();
@@ -94,9 +41,7 @@ void MainWindow::start_game(){
 
 }
 void MainWindow::move_player(){ //logic to move one space based on what direction youre going NOT FINISHED
-    if(current_player->roll == -1){
-        return;
-    }
+    current_player = players[cindex];
     if(ui->gateChoice->currentText() != "" && ui->gateChoice->currentText() != "1" && ui->gateChoice->currentText() != "2" && ui->gateChoice->currentText() != "3" && ui->gateChoice->currentText() != "4" && ui->gateChoice->currentText()!="0"){
     current_player->set_dir(ui->gateChoice->currentText().toLocal8Bit().constData());
     //QString dir = QString::fromUtf8(current_player->get_dir().c_str());
@@ -324,18 +269,19 @@ void MainWindow::move_player(){ //logic to move one space based on what directio
 
     //QColor col = QColor(255,0,255);
     cells[current_player->get_row()][current_player->get_col()]->set_color(current_player->get_color());
+    current_player->roll--;
+    ui->rollLabel->setText(QString("Roll: ").append(QString::number(current_player->roll)));
     QString crow_ = QString::number(current_player->get_row());
     QString ccol_ = QString::number(current_player->get_col());
     ui->rowLabel->setText(crow_);
     ui->colLabel->setText(ccol_);
-    if(current_player->roll == 1){
+    if(current_player->roll == 0){
         //qDebug() << cells[current_player->get_row()][current_player->get_col()]->get_coins();
         current_player->add_coins(cells[current_player->get_row()][current_player->get_col()]->get_coins());
     }
     if(cells[current_player->get_row()][current_player->get_col()]->is_star){
             current_player->add_stars();
             cells[current_player->get_row()][current_player->get_col()]->is_star =false;
-            cells[current_player->get_row()][current_player->get_col()]->set_color(cells[current_player->get_row()][current_player->get_col()]->get_norm());
             Cell * temp;
             srand(time(0));
             int trow = 0;
@@ -361,8 +307,6 @@ void MainWindow::move_player(){ //logic to move one space based on what directio
                 }
             }
     }
-
-    current_player->roll--;
     scene->update();
     return;
 
@@ -373,6 +317,24 @@ void MainWindow::move_player(){ //logic to move one space based on what directio
 //sets the board up
 
 void MainWindow::qt_party(){
+    srand(time(0));
+    int alive_dead =0;
+    for(int i = 0; i <= rows_; i++){
+        for(int j = 0;j<= cols_;j++){
+            cells[i][j] = new Cell();
+            cells[i][j]->set_row(i*40);
+            cells[i][j]->set_col(j*40);
+            alive_dead = rand()%15+0;
+            scene->addItem(cells[i][j]);
+            if(alive_dead == 1){
+                cells[i][j]->set_coin(-5);
+            }
+            else{
+                cells[i][j]->set_coin(10);
+            }
+        }
+    }
+    qDebug() << "here ";
     cells[1][0]->set_alive(true);
     cells[1][1]->set_alive(true);
     cells[1][2]->set_alive(true);
@@ -532,6 +494,43 @@ void MainWindow::qt_party(){
     cells[3][5]->is_gate = true;
     cells[3][3]->is_gate = true;
     cells[4][2]->is_gate = true;
+    for(int i = 0; i <= rows_;i++){
+        for(int j = 0; j<= cols_;j++){
+            if(cells[i][j]->is_alive()){
+                QColor color;
+                if(cells[i][j]->get_coins() > 0){
+                    color = QColor(0,0,255);
+
+                }
+                else{
+                    color = QColor(255,0,0);
+                }
+                if(cells[i][j]->is_gate){
+                    color = QColor(255,255,255);
+
+                }
+                cells[i][j]->set_color(color);
+                cells[i][j]->set_norm(color);
+            }
+            else{
+                QColor color = QColor(211,211,211);
+                cells[i][j]->set_color(color);
+                cells[i][j]->set_norm(color);
+            }
+        }
+    }
+
+    for(int i = 0; i < 4; i++){
+        players[i] = new Player();
+        players[i]->id = i+1;
+    }
+    players[0]->set_color(QColor(255,0,255));
+    players[1]->set_color(QColor(102,255,255));
+    players[2]->set_color(QColor(0,255,0));
+    players[3]->set_color(QColor(100,100,100));
+    cells[1][8]->is_star = true;
+    cells[1][8]->set_color(QColor(255,255,0));
+
 }
 //fills each cells neighbor array
 void MainWindow::calc_neighbors(){
@@ -890,143 +889,111 @@ void MainWindow::simulate(){
 }
 void MainWindow::on_continueButton_clicked()
 {
-    if(!current_player->is_human()){
-        if(game_started){
-            if(rollmode & !minigamemode){
-                on_rollButton_clicked();
-                qDebug() << "CURRENT ROLL : "<< current_player->roll;
-                while(current_player->roll > 0){
-                    on_continueButton_clicked();
-                }
-            }
-        }
-    }
-
-    qDebug() << "GAME STARTED: " << game_started;
-    qDebug() << "ROLL MODE: " << rollmode;
-    qDebug() << "Current Player" << cindex;
-    qDebug() << "Current ROLL : " << current_player->roll;
-    qDebug() << "First game: " << firstgame;
-    qDebug() << "MINI GAME MODE: " << minigamemode;
-
-    if(game_started){
     updateDisplay();
-        if(!rollmode&&!minigamemode){
-        if(current_player->roll > -1){
-            //current_player->roll--;
-            continue_move = true;
-            move_player();
-            QString dir = QString::fromUtf8(current_player->get_dir().c_str());
-           // qDebug() << dir;
-            //qDebug() << current_player->roll;
-            ui->rollLabel->setNum(current_player->roll);
-        }
-        else{
-
-            int cid = cindex + 1;
-            qDebug() << "CID : " << cid;
-            if(cid == 4){
-                ui->logText->setText("p1 and p2 play tic tac toe");
-                minigamemode = true;
-                qDebug() << players[0]->is_human();
-                qDebug() << players[1]->is_human();
-                //players[3]->add_coins(10);
-                tictac_minigame(players[0],players[1]);
-                cid = 0;
-            }
-            else{
-                 ui->logText->setText("Roll Dice");
-            }
-
-            rollmode = true;
-            cindex = cid;
-            current_player = players[cindex];
-            ui->playerLabel->setNum(cindex);
-            if(firstgame){
-            qDebug() << "here";
-            rollmode = true;
-            current_player = players[cindex];
-            ui->playerLabel->setNum(cindex);
-
-            /*if(!current_player->is_human()){
-                on_rollButton_clicked();
-                while(current_player->roll > 0){
-                    on_continueButton_clicked();
-                }
-            }*/
-
-            //qDebug() << current_player->roll;
-            //qDebug() << cid ;
-            ui->playerLabel->setNum(cid+1);
-            ui->gateChoice->clear();
-            if(cells[current_player->get_row()][current_player->get_col()]->is_gate){
-                if(cells[current_player->get_row()][current_player->get_col()]->neighbors[1]){
-                    ui->gateChoice->addItem("up");
-                }
-                if(cells[current_player->get_row()][current_player->get_col()]->neighbors[3]){
-                    ui->gateChoice->addItem("left");
-                }
-                if(cells[current_player->get_row()][current_player->get_col()]->neighbors[4]){
-                    ui->gateChoice->addItem("right");
-                }
-                if(cells[current_player->get_row()][current_player->get_col()]->neighbors[6]){
-                    ui->gateChoice->addItem("down");
-                }
-
-            }
-            }
-        }
-        }
-        else if(minigamemode && !firstgame){
-            tictac_minigame(players[2],players[3]);
-        }
+    if(!game_started){
+        if(ui->gateChoice->currentText()=="1"){
+                   players[0]->set_human(true);
+               }
+               else if(ui->gateChoice->currentText()=="2"){
+                   players[0]->set_human(true);
+                   players[1]->set_human(true);
+               }
+               else if(ui->gateChoice->currentText()=="3"){
+                   players[0]->set_human(true);
+                   players[1]->set_human(true);
+                   players[2]->set_human(true);
+               }
+               else if (ui->gateChoice->currentText()=="4"){
+                   players[0]->set_human(true);
+                   players[1]->set_human(true);
+                   players[2]->set_human(true);
+                   players[3]->set_human(true);
+               }
+               else if(ui->gateChoice->currentText() == "0"){
+                   game_started = false;
+               }
+        qDebug() << players[0]->is_human();
+        qDebug() << players[1]->is_human();
+        qDebug() << players[2]->is_human();
+        qDebug() << players[3]->is_human();
+        rollmode = true;
+        ui->logText->setText("Roll Die");
     }
     else{
-        if(ui->gateChoice->currentText()=="1"){
-            players[0]->set_human(true);
+        if(!rollmode && !minigamemode){
+            if(players[cindex]->roll > 0){
+                move_player();
+            }
+            else{
+                cindex = cindex + 1;
+                ui->gateChoice->clear();
+                if(cindex == 4){
+                    minigamemode = true;
+                    cindex = 0;
+                }
+                else{
+                    rollmode = true;
+                }
+                qDebug() << cindex ;
+                ui->playerLabel->setText(QString("Player: ").append(QString::number(cindex+1)));
+                if(!minigamemode){
+                    ui->logText->setText("Roll Die");
+                    qDebug() << "Weird ";
+                    if(!players[cindex]->is_human()){
+                        qDebug() << "hmm" ;
+                        simulate_turn();
+                    }
+
+                }
+            }
         }
-        else if(ui->gateChoice->currentText()=="2"){
-            players[0]->set_human(true);
-            players[1]->set_human(true);
+        else if(minigamemode){
+            if(tictac){
+                ui->guesserGame_2->hide();
+                if(firstgame){
+                    ui->logText->setText("P1 and P2 tic tac toe time");
+                    tictac_minigame(players[0],players[1]);
+                }
+                else{
+                    tictac_minigame(players[2],players[3]);
+                }
+            }
+            else{
+                if(firstgame){
+                    guesser_game(players[0],players[2]);
+                }
+                else{
+                    guesser_game(players[1],players[3]);//second game p2 p4
+                }
+            }
         }
-        else if(ui->gateChoice->currentText()=="3"){
-            players[0]->set_human(true);
-            players[1]->set_human(true);
-            players[2]->set_human(true);
-        }
-        else if (ui->gateChoice->currentText()=="4"){
-            players[0]->set_human(true);
-            players[1]->set_human(true);
-            players[2]->set_human(true);
-            players[3]->set_human(true);
-        }
-        else if(ui->gateChoice->currentText() == "0"){
-            rollmode = true;
-            on_rollButton_clicked();
-        }
-        //qDebug() << players[0]->is_human();
-        //qDebug() << players[1]->is_human();
-        //qDebug() << players[2]->is_human();
-        //qDebug() << players[3]->is_human();
-        Mushroom  x = Mushroom(players[1]->items[1]);
-        game_started = true;
-        ui->logText->setText("Player 1 Roll Die");
     }
 
 }
 
 
+void MainWindow::simulate_turn(){
+    on_rollButton_clicked();
+    while(players[cindex]->roll > 0){
+        move_player();
+    }
+    //on_continueButton_clicked();
+}
+
 void MainWindow::on_rollButton_clicked()
 {
-    if(rollmode && !minigamemode && game_started){
-     int newroll = rand()%6+1;
-     current_player->roll = newroll;
-     ui->rollLabel->setNum(newroll);
-     //qDebug() << newroll;
-     rollmode = false;
-     ui->logText->setText("press continue until out of moves");
+    if(rollmode){
+        if(!game_started){
+            game_started = true;
+        }
+        srand(time(0));
+        int newroll = rand()%(6+players[cindex]->rollupgrade)+1;
+        players[cindex]->roll = newroll;
+        players[cindex]->rollupgrade = 0;
+        ui->rollLabel->setText(QString("Roll: ").append(QString::number(newroll)));
+        rollmode = false;
+        ui->logText->setText("press continue until out of moves");
     }
-
 }
 void MainWindow::tictac_minigame(Player *p1, Player *p2){
     rollmode = false;
@@ -1181,56 +1148,6 @@ void MainWindow::tictac_minigame(Player *p1, Player *p2){
 int MainWindow::check_tictac(Player *p1, Player *p2){
     int state = -1; //counts winning player
     counter ++;
-    //qDebug() << "countbelow";
-
-
-//    if(!p1->is_human()&& p2->is_human() && min_game_current == 1){
-//       if(ui->tic1->text()=="1"){
-//           ui->tic1->setText("X");
-//           min_game_current = !min_game_current;
-//           counter++;
-//       }
-//       else if(ui->tic2->text()=="2"){
-//           ui->tic2->setText("X");
-//           min_game_current = !min_game_current;
-//           counter++;
-//       }
-//       else if(ui->tic3->text()=="3"){
-//           ui->tic3->setText("X");
-//           min_game_current = !min_game_current;
-//           counter++;
-//       }
-//       else if(ui->tic4->text()=="4"){
-//           ui->tic4->setText("X");
-//           min_game_current = !min_game_current;
-//           counter++;
-//       }
-//       else if(ui->tic5->text()=="5"){
-//           ui->tic5->setText("X");
-//           min_game_current = !min_game_current;
-//           counter++;
-//       }
-//       else if(ui->tic6->text()=="6"){
-//           ui->tic6->setText("X");
-//           min_game_current = !min_game_current;
-//           counter++;
-//       }
-//       else if(ui->tic7->text()=="7"){
-//           ui->tic7->setText("X");
-//           min_game_current = !min_game_current;
-//           counter++;
-//       }
-//       else if(ui->tic8->text()=="8"){
-//           ui->tic8->setText("X");
-//           min_game_current = !min_game_current;
-//           counter++;
-//       }
-//       else if(ui->tic9->text()=="9"){
-//           ui->tic9->setText("X");
-//           min_game_current = !min_game_current;
-//           counter++;
-//       }
-//    }
 
 
        if(!p2->is_human() && p1->is_human() && min_game_current == 0){
@@ -1325,11 +1242,6 @@ int MainWindow::check_tictac(Player *p1, Player *p2){
                    counter = 0;
                    firstgame = false;
                    min_game_current = 0;
-                   //minp1 = players[2];
-                   //minp2 = players[3];
-                   //tictac_minigame(players[2],players[3]);
-                   counter = 0;
-                   firstgame = false;
                    return 1;
                }
                else{
@@ -1337,29 +1249,10 @@ int MainWindow::check_tictac(Player *p1, Player *p2){
                    firstgame = true;
                    minigamemode = false;
                    rollmode = true;
+                   tictac = false;
                    return 1;
                }
            }
-//           if(state == 0 && p1->is_human()){
-//               p1->add_coins(10);
-//               ui->logText->setText("p1 win");
-
-//               //ui->tictac->hide();
-
-//               if(firstgame){
-
-//                   ui->logText->setText("p1 win : p3 and p4 play next game");
-//                   tictac_minigame(players[1],players[2]);
-//                   firstgame = false;
-//               }
-//               else{
-//                    ui->logText->setText("p1 win : roll die");
-//                   firstgame = true;
-//                   minigamemode = false;
-//                   rollmode = true;
-//               }
-//               return 1;
-//           }
    //check p2 win
            if (ui->tic1->text() == ui->tic2->text() && ui->tic2->text() == ui->tic3->text() && ui->tic3->text()=="O"){
 
@@ -1402,11 +1295,6 @@ int MainWindow::check_tictac(Player *p1, Player *p2){
                 counter = 0;
                 firstgame = false;
                 min_game_current = 0;
-                //minp1 = players[2];
-                //minp2 = players[3];
-                //tictac_minigame(players[2],players[3]);
-                counter = 0;
-                firstgame = false;
                 return 1;
             }
             else{
@@ -1414,9 +1302,7 @@ int MainWindow::check_tictac(Player *p1, Player *p2){
                 counter = 0;
                 firstgame = false;
                 min_game_current = 0;
-                tictac_minigame(players[2],players[3]);
-                counter = 0;
-                firstgame = false;
+                tictac = false;
                 return 1;
 
             }
@@ -1427,17 +1313,12 @@ int MainWindow::check_tictac(Player *p1, Player *p2){
             ui->tictac->hide();
             //ui->logText->setText("p2 win : roll die");
             reset_tic();
+            ui->tictac->hide();
             if(firstgame){
                 ui->logText->setText("p2 win : p3 and p4 play next game");
                 counter = 0;
                 firstgame = false;
                 min_game_current = 0;
-                //tictac_minigame(players[2],players[3]);
-                //firstgame = false;
-                counter = 0;
-                //tictac_minigame(players[2],players[3]);
-                firstgame = false;
-                //counter = 0;
                 return 1;
             }
             else{
@@ -1446,6 +1327,7 @@ int MainWindow::check_tictac(Player *p1, Player *p2){
                 minigamemode = false;
                 rollmode = true;
                 counter = 0;
+                tictac = false;
                 return 1;
 
             }
@@ -1456,15 +1338,12 @@ int MainWindow::check_tictac(Player *p1, Player *p2){
             p1->add_coins(5);
             p2->add_coins(5);
             reset_tic();
-            //ui->tictac->hide();
+            ui->tictac->hide();
             if(firstgame){
                 ui->logText->setText("Tied Game : p3 and p4 play next game");
                 counter = 0;
                 firstgame = false;
                 min_game_current = 0;
-                //(players[2],players[3]);
-                firstgame = false;
-
                 counter = 0;
                 return 1;
             }
@@ -1474,6 +1353,7 @@ int MainWindow::check_tictac(Player *p1, Player *p2){
                 minigamemode = false;
                 rollmode = true;
                 counter = 0;
+                tictac = false;
                 return 1;
             }
 
@@ -1662,20 +1542,28 @@ void MainWindow::reset_tic(){
 
 void MainWindow::on_simulateButton_clicked()
 {
+    ui->graphLayout->setVisible(true);
     if(!game_started){
-        on_continueButton_clicked();
-        for(int i = 0; i < turns; i++){
+        for(int i = 0; i < turns; i ++){
+            simulate_turn();
+            on_continueButton_clicked();
+            simulate_turn();
+            on_continueButton_clicked();
+            simulate_turn();
+            on_continueButton_clicked();
+            simulate_turn();
+            //on_continueButton_clicked();
+            if(tictac){
             on_continueButton_clicked();
             on_continueButton_clicked();
-            on_continueButton_clicked();
-            on_continueButton_clicked();
-            on_continueButton_clicked();
-            on_continueButton_clicked();
-            on_continueButton_clicked();
-            on_continueButton_clicked();
-            on_continueButton_clicked();
-            on_continueButton_clicked();
+            }
+            else{
+                on_checkGuess_clicked();
+                on_checkGuess_clicked();
+            }
         }
+        ui->simulateButton->setText("reset");
+        update_graph(chartview);
 
     }
     else{
@@ -1684,11 +1572,224 @@ void MainWindow::on_simulateButton_clicked()
             players[i]->set_row(18);
             players[i]->add_coins(-players[i]->get_coins());
             players[i]->clear_stars();
+             updateDisplay();
             players[i]->roll = 0;
             game_started = false;
+            ui->simulateButton->setText("Simulate");
         }
 
     }
 
+    scene2->update();
+//    for(int i = 0; i <4; i++){
+//        qDebug() << players[i]->get_wins();
+//    }
+
 }
 
+//initialize guesser game
+void MainWindow::guesser_game(Player * p1, Player * p2){
+    ui->guesserGame_2->hide();
+    ui->guesserGame_2->show();
+    guess_answer = rand()%100+1;
+    minp1 = p1;
+    minp2 = p2;
+
+
+}
+
+void MainWindow::on_checkGuess_clicked()
+{
+    if(!tictac){
+    //Ai chooses random number
+    if(!minp1->is_human()){
+        int p1rand = rand()%100+1;
+        ui->p1choice->setValue(p1rand);
+    }
+    if(!minp2->is_human()){
+        int p2rand = rand()%100+1;
+        ui->p2choice->setValue(p2rand);
+    }
+
+    //Set strings to print
+    std::string s2 = "P";
+    s2.append(std::to_string(minp2->get_id()));
+    if((minp1->get_id()==1) & (minp2->get_id()==2)){
+        s2.append(" wins 10 coins. Now P3 and P4 play");
+    }
+    else {
+        s2.append(" wins 10 coins. Roll the die");
+
+    }
+    QString qs2 = QString::fromStdString(s2);
+
+    std::string s1 = "P";
+    s1.append(std::to_string(minp1->get_id()));
+    if((minp1->get_id()==1) & (minp2->get_id()==2)){
+        s1.append(" wins 10 coins. Now P3 and P4 play");
+    }
+    else {
+        s1.append(" wins 10 coins. Roll the die");
+
+    }
+     QString qs1 = QString::fromStdString(s1);
+
+     std::string st = "Tied Game.";
+     if((minp1->get_id()==1) & (minp2->get_id()==2)){
+         st.append(" Now P3 and P4 play");
+     }
+     else {
+         st.append(" Roll the die");
+
+     }
+
+     QString qst = QString::fromStdString(st);
+
+    //calculate scores
+    int p1score = abs(ui->p1choice->value() - guess_answer);
+    int p2score = abs(ui->p2choice->value() - guess_answer);
+
+    //check for winner or tie
+    if(p1score > p2score){
+        minp2->add_coins(10);
+        ui->logText->setText(qs2);
+        if(firstgame){
+            ui->logText->setText("Play Second Game");
+            firstgame = false;
+        }
+        else{
+            firstgame = true;
+            minigamemode = false;
+            tictac = true;
+        }
+
+    }
+    else if (p2score > p1score) {
+        minp1->add_coins(10);
+        ui->logText->setText(qs1);
+        if(firstgame){
+            ui->logText->setText("Play Second Game");
+            firstgame = false;
+        }
+        else{
+            firstgame = true;
+            minigamemode = false;
+            tictac = true;
+        }
+
+    }
+    else {
+        minp1->add_coins(5);
+        minp2->add_coins(5);
+        ui->logText->setText(qst);
+        if(firstgame){
+            ui->logText->setText("Play Second Game");
+            firstgame = false;
+        }
+        else{
+            firstgame = true;
+            minigamemode = false;
+            tictac = true;
+        }
+
+    }
+    rollmode = true;
+
+    ui->actualnum->display(guess_answer);
+    }
+}
+
+void MainWindow::most_coins(){
+    //give a star to player with most coins
+    int max_coins = 0;
+    for(int i = 0; i <4; i++){
+        if(max_coins < players[i]->get_coins()){
+            max_coins = players[i]->get_coins();
+        }
+    }
+    for(int i = 0; i <4; i++){
+        if(max_coins == players[i]->get_coins()){
+            players[i]->add_stars();
+        }
+    }
+    updateDisplay();
+}
+
+void MainWindow::calculate_winner(){
+    int winner_coins=0;
+    int max_stars = 0;
+    //Player * winner;
+    for(int i = 0; i <4; i++){
+        if(max_stars < players[i]->get_stars()){
+            max_stars = players[i]->get_stars();
+        }
+    }
+    for(int i = 0; i <4; i++){
+        if(max_stars == players[i]->get_stars()){
+            if(winner_coins < players[i]->get_coins() ){
+                winner_coins = players[i]->get_coins();
+                winner = players[i];
+            }
+        }
+    }
+    winner->add_wins();
+
+
+}
+
+void MainWindow::update_graph(QGraphicsView * view2){
+
+        scene2->clear();
+        int framewidth = view2->frameSize().width()/4-10;
+        int frame_height = view2->frameSize().rheight();
+        for(int i = 0; i<4 ;i++){
+
+            scene2->addRect(QRect(framewidth*i,frame_height- (players[i]->get_wins())*60,framewidth,(players[i]->get_wins()*60)));
+
+        }
+
+
+
+}
+
+
+void MainWindow::on_useItem_clicked()
+{
+    if(rollmode){
+        if(!itemsfilled){
+            for(int i =  0; i< 3; i++){
+                if(!players[cindex]->items[i]->used_){
+                    ui->itemChoice->addItem(players[cindex]->items[i]->name);
+                }
+            }
+            itemsfilled = true;
+        }
+        else{
+            if(ui->itemChoice->currentText() == "Large Mushroom"){
+                for(int i = 0; i < 3; i++){
+                    if(players[cindex]->items[i]->name == "Large Mushroom" && !players[cindex]->items[i]->used_){
+                        players[cindex]->items[i]->used_ = true;
+                        players[cindex]->rollupgrade = 4;
+                        break;
+                    }
+                }
+            }
+            else if(ui->itemChoice->currentText() == "Small Mushroom"){
+                for(int i = 0; i < 3; i++){
+                    if(players[cindex]->items[i]->name == "Small Mushroom" && !players[cindex]->items[i]->used_){
+                        players[cindex]->items[i]->used_ = true;
+                        players[cindex]->rollupgrade = 2;
+                        break;
+                    }
+                }
+            }
+            else if(ui->itemChoice->currentText() == "Hammer"){
+                players[cindex]->items[0]->used_ = true;
+                players[cindex]->add_coins(50);
+            }
+            itemsfilled = false;
+            ui->itemChoice->clear();
+
+        }
+    }
+}
