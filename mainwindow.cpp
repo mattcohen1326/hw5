@@ -1771,25 +1771,7 @@ void MainWindow::on_checkGuess_clicked()
 
 
 void MainWindow::calculate_winner(){
-    /*int winner_coins=0;
-    int max_stars = 0;
-    //Player * winner;
-    for(int i = 0; i <4; i++){
-        if(max_stars < players[i]->get_stars()){
-            max_stars = players[i]->get_stars();
-        }
-    }
-    for(int i = 0; i <4; i++){
-        if(max_stars == players[i]->get_stars()){
-            if(winner_coins < players[i]->get_coins() ){
-                winner_coins = players[i]->get_coins();
-                winner = players[i];
-                winner->add_wins();
-            }
-        }
-    }
-<<<<<<< HEAD
-    winner->add_wins();*/
+
     int max_coins = 0;
     for(int i = 0; i < 4; i++){
         if(players[i]->get_coins() > max_coins){
@@ -1861,7 +1843,8 @@ void MainWindow::on_useItem_clicked()
                 for(int i = 0; i < 3; i++){
                     if(players[cindex]->items[i]->name == "Large Mushroom" && !players[cindex]->items[i]->used_){
                         players[cindex]->items[i]->used_ = true;
-                        players[cindex]->rollupgrade = 4;
+                        players[cindex]->rollupgrade = players[cindex]->items[i]->use();
+                        qDebug() << players[cindex]->rollupgrade;
                         break;
                     }
                 }
@@ -1870,7 +1853,8 @@ void MainWindow::on_useItem_clicked()
                 for(int i = 0; i < 3; i++){
                     if(players[cindex]->items[i]->name == "Small Mushroom" && !players[cindex]->items[i]->used_){
                         players[cindex]->items[i]->used_ = true;
-                        players[cindex]->rollupgrade = 2;
+                        players[cindex]->rollupgrade = players[cindex]->items[i]->use();
+                        qDebug() << players[cindex]->rollupgrade;
                         break;
                     }
                 }

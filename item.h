@@ -3,6 +3,7 @@
 
 #include <QColor>
 
+
 class Item
 {
 public:
@@ -10,7 +11,7 @@ public:
     virtual ~Item();
     bool used_;
     QString name;
-    //virtual void use();
+    virtual int use();
 protected:
 
 };
@@ -23,7 +24,7 @@ public:
     is_large(large),
     is_small(!large)
     {}
-    //void use();
+    int use();
     ~Mushroom();
 private:
     bool is_large;
@@ -39,8 +40,7 @@ public:
     Item()
     {}
     ~Hammer();
-    //void use();
-    //void build();
+    int use();
 
 };
 

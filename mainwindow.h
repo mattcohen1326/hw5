@@ -64,7 +64,7 @@ private slots:
     void on_useItem_clicked();
 
 private:
-    int turns = 3;
+    int turns = 15;
     Player * players[4];
     Player * current_player;
     Player * winner;
