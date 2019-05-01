@@ -284,9 +284,9 @@ void MainWindow::move_player(){ //logic to move one space based on what directio
             cells[current_player->get_row()][current_player->get_col()]->is_star =false;
             Cell * temp;
             srand(time(0));
-            int trow = 0;
-            int tcol = 0;
-            while(!temp->is_alive()){
+            int trow = 15;
+            int tcol = 10;
+            while(!temp->is_alive() || trow >= 15 || tcol == 10 || tcol == 12){
                  trow = rand()%rows_+0;
                  tcol = rand()%cols_+0;
                  temp = cells[trow][tcol];
@@ -335,10 +335,8 @@ void MainWindow::qt_party(){
         }
     }
     qDebug() << "here ";
-    cells[1][0]->set_alive(true);
-    cells[1][1]->set_alive(true);
-    cells[1][2]->set_alive(true);
-    cells[1][3]->set_alive(true);
+    //cells[1][0]->set_alive(true);
+    //cells[1][1]->set_alive(true);
     cells[1][8]->set_alive(true);
     cells[1][9]->set_alive(true);
     cells[1][10]->set_alive(true);
@@ -349,45 +347,48 @@ void MainWindow::qt_party(){
     cells[1][15]->set_alive(true);
     cells[1][16]->set_alive(true);
     cells[1][17]->set_alive(true);
-    cells[1][0]->set_alive(true);
-    cells[1][3]->set_alive(true);
-    cells[1][5]->set_alive(true);
+    //cells[1][0]->set_alive(true);
+    //cells[1][3]->set_alive(true);
+    //cells[1][5]->set_alive(true);
     cells[1][12]->set_alive(true);
     cells[1][17]->set_alive(true);
-    cells[2][0]->set_alive(true);
-    cells[2][3]->set_alive(true);
-    cells[2][5]->set_alive(true);
+    //cells[2][0]->set_alive(true);
+    //cells[2][2]->set_alive(true);
+    //cells[2][3]->set_alive(true);
+    //cells[2][5]->set_alive(true);
     cells[2][12]->set_alive(true);
     cells[2][17]->set_alive(true);
-    cells[3][0]->set_alive(true);
-    cells[3][3]->set_alive(true);
-    cells[3][4]->set_alive(true);
-    cells[3][5]->set_alive(true);
-    cells[3][6]->set_alive(true);
+    //cells[3][0]->set_alive(true);
+    //cells[3][3]->set_alive(true);
+    //cells[3][4]->set_alive(true);
+    //cells[3][5]->set_alive(true);
+    //cells[3][6]->set_alive(true);
+    //cells[3][2]->set_alive(true);
     cells[3][12]->set_alive(true);
-    cells[3][17]->set_alive(true);
+    //cells[3][17]->set_alive(true);
     cells[3][18]->set_alive(true);
-    cells[4][0]->set_alive(true);
-    cells[4][1]->set_alive(true);
-    cells[4][2]->set_alive(true);
-    cells[4][3]->set_alive(true);
-    cells[4][5]->set_alive(true);
+    //cells[4][0]->set_alive(true);
+    //cells[4][1]->set_alive(true);
+    //cells[4][2]->set_alive(true);
+    //cells[4][3]->set_alive(true);
+    //cells[4][5]->set_alive(true);
     cells[4][12]->set_alive(true);
     cells[4][18]->set_alive(true);
-    cells[5][2]->set_alive(true);
-    cells[5][5]->set_alive(true);
+    //cells[5][2]->set_alive(true);
+
+    //cells[5][9]->set_alive(true);
     cells[5][10]->set_alive(true);
     cells[5][11]->set_alive(true);
     cells[5][12]->set_alive(true);
     cells[5][13]->set_alive(true);
     cells[5][14]->set_alive(true);
     cells[5][18]->set_alive(true);
-    cells[6][2]->set_alive(true);
-    cells[6][3]->set_alive(true);
-    cells[6][5]->set_alive(true);
-    cells[6][6]->set_alive(true);
+    //cells[6][2]->set_alive(true);
+    //cells[6][3]->set_alive(true);
+    //cells[6][5]->set_alive(true);
+    //cells[6][6]->set_alive(true);
     cells[6][10]->set_alive(true);
-    cells[6][14]->set_alive(true);
+    //cells[6][14]->set_alive(true);
     cells[6][15]->set_alive(true);
     cells[6][18]->set_alive(true);
     cells[7][10]->set_alive(true);
@@ -493,7 +494,8 @@ void MainWindow::qt_party(){
     cells[1][12]->is_gate = true;
     cells[3][5]->is_gate = true;
     cells[3][3]->is_gate = true;
-    cells[4][2]->is_gate = true;
+    //cells[4][2]->is_gate = true;
+    cells[1][8]->is_star = true;
     for(int i = 0; i <= rows_;i++){
         for(int j = 0; j<= cols_;j++){
             if(cells[i][j]->is_alive()){
@@ -910,7 +912,7 @@ void MainWindow::on_continueButton_clicked()
                    players[3]->set_human(true);
                }
                else if(ui->gateChoice->currentText() == "0"){
-                   game_started = false;
+                   //game_started = false;
                }
         qDebug() << players[0]->is_human();
         qDebug() << players[1]->is_human();
@@ -960,10 +962,10 @@ void MainWindow::on_continueButton_clicked()
             }
             else{
                 if(firstgame){
-                    guesser_game(players[0],players[2]);
+                    guesser_game(players[0],players[1]);
                 }
                 else{
-                    guesser_game(players[1],players[3]);//second game p2 p4
+                    guesser_game(players[2],players[3]);//second game p2 p4
                 }
             }
         }
@@ -1569,14 +1571,21 @@ void MainWindow::on_simulateButton_clicked()
     }
     else{
         for(int i = 0; i < 4; i++){
+            //cells[players[i]->get_row()][players[i]->get_col()]->set_color(cells[players[i]->get_row()][players[i]->get_col()]->get_norm());
             players[i]->set_col(1);
             players[i]->set_row(18);
             players[i]->add_coins(-players[i]->get_coins());
             players[i]->clear_stars();
-             updateDisplay();
+            updateDisplay();
             players[i]->roll = 0;
             game_started = false;
             ui->simulateButton->setText("Simulate");
+        }
+        for(int i = 0; i <rows_; i++){
+            for(int j = 0; j <cols_;j++){
+                qDebug() << "What";
+                cells[i][j]->set_color(cells[i][j]->get_norm());
+            }
         }
 
     }
@@ -1700,24 +1709,9 @@ void MainWindow::on_checkGuess_clicked()
     }
 }
 
-void MainWindow::most_coins(){
-    //give a star to player with most coins
-    int max_coins = 0;
-    for(int i = 0; i <4; i++){
-        if(max_coins < players[i]->get_coins()){
-            max_coins = players[i]->get_coins();
-        }
-    }
-    for(int i = 0; i <4; i++){
-        if(max_coins == players[i]->get_coins()){
-            players[i]->add_stars();
-        }
-    }
-    updateDisplay();
-}
 
 void MainWindow::calculate_winner(){
-    int winner_coins=0;
+    /*int winner_coins=0;
     int max_stars = 0;
     //Player * winner;
     for(int i = 0; i <4; i++){
@@ -1733,8 +1727,33 @@ void MainWindow::calculate_winner(){
             }
         }
     }
-    winner->add_wins();
-
+    winner->add_wins();*/
+    int max_coins = 0;
+    for(int i = 0; i < 4; i++){
+        if(players[i]->get_coins() > max_coins){
+            max_coins = players[i]->get_coins();
+        }
+    }
+    for(int i = 0; i < 4; i++){
+        if(players[i]->get_coins() == max_coins){
+            players[i]->add_stars();
+            qDebug() << "Player " << i + 1 << "GEts a star";
+        }
+    }
+    int maxstars = 0;
+    for(int i = 0; i < 4; i ++){
+        if(players[i]->get_stars() > maxstars){
+            maxstars = players[i]->get_stars();
+        }
+    }
+    qDebug() << "MAX STARS: " << maxstars;
+    for(int i = 0; i < 4; i++){
+        if(players[i]->get_stars() == maxstars){
+            players[i]->add_wins();
+            qDebug() << "PLAYER: " << i << " WINS";
+        }
+    }
+    return;
 
 }
 
@@ -1744,7 +1763,6 @@ void MainWindow::update_graph(QGraphicsView * view2){
         int framewidth = view2->frameSize().width()/4-10;
         int frame_height = view2->frameSize().rheight();
         for(int i = 0; i<4 ;i++){
-
             scene2->addRect(QRect(framewidth*i,frame_height- (players[i]->get_wins())*60,framewidth,(players[i]->get_wins()*60)));
 
         }
