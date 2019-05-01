@@ -1563,6 +1563,7 @@ void MainWindow::on_simulateButton_clicked()
             }
         }
         ui->simulateButton->setText("reset");
+        calculate_winner();
         update_graph(chartview);
 
     }
