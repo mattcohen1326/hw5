@@ -407,13 +407,20 @@
    <widget class="QWidget" name="guesserGame_2" native="true">
     <property name="geometry">
      <rect>
-      <x>910</x>
+      <x>870</x>
       <y>620</y>
-      <width>281</width>
+      <width>361</width>
       <height>271</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="guesserGame">
+     <item>
+      <widget class="QLabel" name="p1label">
+       <property name="text">
+        <string>P</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <widget class="QSpinBox" name="p1choice">
        <property name="maximum">
@@ -428,6 +435,13 @@
       <widget class="QSpinBox" name="p2choice">
        <property name="maximum">
         <number>100</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="p2label">
+       <property name="text">
+        <string>P</string>
        </property>
       </widget>
      </item>
@@ -450,10 +464,20 @@
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="gamesWon">
+       <property name="text">
+        <string>Games Won by Players</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
      <item row="1" column="0">
       <widget class="QGraphicsView" name="minigame"/>
      </item>
-     <item row="2" column="0">
+     <item row="3" column="0">
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <widget class="QLabel" name="label">
@@ -497,15 +521,21 @@
        </item>
       </layout>
      </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="gamesWon">
-       <property name="text">
-        <string>Games Won by Players</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
+     <item row="2" column="0">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QLCDNumber" name="lcdNumber"/>
+       </item>
+       <item>
+        <widget class="QLCDNumber" name="lcdNumber_2"/>
+       </item>
+       <item>
+        <widget class="QLCDNumber" name="lcdNumber_3"/>
+       </item>
+       <item>
+        <widget class="QLCDNumber" name="lcdNumber_4"/>
+       </item>
+      </layout>
      </item>
     </layout>
    </widget>
@@ -549,10 +579,10 @@
    <zorder>rollLabel</zorder>
    <zorder>playerLabel</zorder>
    <zorder>simulateButton</zorder>
-   <zorder>guesserGame_2</zorder>
-   <zorder>graphLayout</zorder>
    <zorder>itemChoice</zorder>
    <zorder>useItem</zorder>
+   <zorder>guesserGame_2</zorder>
+   <zorder>graphLayout</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
