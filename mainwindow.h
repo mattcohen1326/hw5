@@ -31,6 +31,7 @@ public:
     void play();
     void start_game();
     bool game_started = false;
+    bool simulation = false;
     bool use_item = false;
     bool firstgame = true;
     bool beginning = true;
@@ -63,7 +64,7 @@ private slots:
     void on_useItem_clicked();
 
 private:
-    int turns = 20;
+    int turns = 3;
     Player * players[4];
     Player * current_player;
     Player * winner;

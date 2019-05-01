@@ -53,8 +53,8 @@ void MainWindow::move_player(){ //logic to move one space based on what directio
                     current_player->set_dir(ui->gateChoice->itemText(i).toUtf8().constData());
             }
     }
-    QString de = QString::fromUtf8(current_player->get_dir().c_str());
-    qDebug() << "DIRECTION" << de ;
+    //QString de = QString::fromUtf8(current_player->get_dir().c_str());
+    //qDebug() << "DIRECTION" << de ;
     }
     bool changecolor = true;
     for(int i = 0; i < 4; i++){
@@ -286,7 +286,7 @@ void MainWindow::move_player(){ //logic to move one space based on what directio
             srand(time(0));
             int trow = 15;
             int tcol = 10;
-            while(!temp->is_alive() || trow >= 15 || tcol == 10 || tcol == 12){
+            while(!temp->is_alive()){
                  trow = rand()%rows_+0;
                  tcol = rand()%cols_+0;
                  temp = cells[trow][tcol];
@@ -334,7 +334,7 @@ void MainWindow::qt_party(){
             }
         }
     }
-    qDebug() << "here ";
+    //qDebug() << "here ";
     //cells[1][0]->set_alive(true);
     //cells[1][1]->set_alive(true);
     cells[1][8]->set_alive(true);
@@ -892,6 +892,11 @@ void MainWindow::simulate(){
 }
 void MainWindow::on_continueButton_clicked()
 {
+    if(turns == 0 && !simulation){
+        game_started = false;
+        ui->logText->setText("GAME OVER");
+        return;
+    }
     updateDisplay();
     if(!game_started){
         if(ui->gateChoice->currentText()=="1"){
@@ -913,7 +918,8 @@ void MainWindow::on_continueButton_clicked()
                    players[3]->set_human(true);
                }
                else if(ui->gateChoice->currentText() == "0"){
-                   //game_started = false;
+                   game_started = false;
+                   simulation = true;
                }
         qDebug() << players[0]->is_human();
         qDebug() << players[1]->is_human();
@@ -937,13 +943,13 @@ void MainWindow::on_continueButton_clicked()
                 else{
                     rollmode = true;
                 }
-                qDebug() << cindex ;
+                //qDebug() << cindex ;
                 ui->playerLabel->setText(QString("Player: ").append(QString::number(cindex+1)));
                 if(!minigamemode){
                     ui->logText->setText("Roll Die");
-                    qDebug() << "Weird ";
+                    //qDebug() << "Weird ";
                     if(!players[cindex]->is_human()){
-                        qDebug() << "hmm" ;
+                        //qDebug() << "hmm" ;
                         simulate_turn();
                     }
 
@@ -986,7 +992,7 @@ void MainWindow::simulate_turn(){
 void MainWindow::on_rollButton_clicked()
 {
     if(rollmode){
-        if(!game_started){
+        if(!game_started && !simulation){
             game_started = true;
         }
         srand(time(0));
@@ -1253,6 +1259,7 @@ int MainWindow::check_tictac(Player *p1, Player *p2){
                    minigamemode = false;
                    rollmode = true;
                    tictac = false;
+                   turns--;
                    return 1;
                }
            }
@@ -1306,6 +1313,7 @@ int MainWindow::check_tictac(Player *p1, Player *p2){
                 firstgame = false;
                 min_game_current = 0;
                 tictac = false;
+                turns--;
                 return 1;
 
             }
@@ -1331,6 +1339,7 @@ int MainWindow::check_tictac(Player *p1, Player *p2){
                 rollmode = true;
                 counter = 0;
                 tictac = false;
+                turns--;
                 return 1;
 
             }
@@ -1357,6 +1366,7 @@ int MainWindow::check_tictac(Player *p1, Player *p2){
                 rollmode = true;
                 counter = 0;
                 tictac = false;
+                turns--;
                 return 1;
             }
 
@@ -1545,9 +1555,16 @@ void MainWindow::reset_tic(){
 
 void MainWindow::on_simulateButton_clicked()
 {
+    if(simulation){
     ui->graphLayout->setVisible(true);
+    int sturns = 20;
+    simulation = true;
     if(!game_started){
-        for(int i = 0; i < turns; i ++){
+        ui->gateChoice->clear();
+        ui->gateChoice->addItem("0");
+        game_started = true;
+        //on_continueButton_clicked();
+        for(int i = 0; i < sturns; i ++){
             simulate_turn();
             on_continueButton_clicked();
             simulate_turn();
@@ -1555,24 +1572,26 @@ void MainWindow::on_simulateButton_clicked()
             simulate_turn();
             on_continueButton_clicked();
             simulate_turn();
-            //on_continueButton_clicked();
             if(tictac){
             on_continueButton_clicked();
             on_continueButton_clicked();
             }
             else{
+                on_continueButton_clicked();
                 on_checkGuess_clicked();
                 on_continueButton_clicked();
                 on_checkGuess_clicked();
             }
         }
+
         ui->simulateButton->setText("reset");
         //most_coins();
-        calculate_winner();
-        update_graph(chartview);
+
 
     }
     else{
+        calculate_winner();
+        update_graph(chartview);
         for(int i = 0; i < 4; i++){
             //cells[players[i]->get_row()][players[i]->get_col()]->set_color(cells[players[i]->get_row()][players[i]->get_col()]->get_norm());
             players[i]->set_col(1);
@@ -1583,20 +1602,28 @@ void MainWindow::on_simulateButton_clicked()
             players[i]->roll = 0;
             game_started = false;
             ui->simulateButton->setText("Simulate");
+
         }
         for(int i = 0; i <rows_; i++){
             for(int j = 0; j <cols_;j++){
-                qDebug() << "What";
+                //qDebug() << "What";
+                if(cells[i][j]->is_alive()){
                 cells[i][j]->set_color(cells[i][j]->get_norm());
+                cells[i][j]->is_star = false;
+                }
             }
         }
-
+        cells[1][8]->is_star = true;
+        cells[1][8]->set_color(QColor(255,255,0));
     }
 
     scene2->update();
+    scene->update();
 //    for(int i = 0; i <4; i++){
 //        qDebug() << players[i]->get_wins();
 //    }
+    }
+
 
 }
 
@@ -1656,7 +1683,7 @@ void MainWindow::on_checkGuess_clicked()
     //Set strings to print
     std::string s2 = "P";
     s2.append(std::to_string(minp2->get_id()));
-    if((minp1->get_id()==1) & (minp2->get_id()==3)){
+    if((minp1->get_id()==1) & (minp2->get_id()==2)){
         s2.append(" wins 10 coins. Now P3 and P4 play");
     }
     else {
@@ -1667,8 +1694,8 @@ void MainWindow::on_checkGuess_clicked()
 
     std::string s1 = "P";
     s1.append(std::to_string(minp1->get_id()));
-    if((minp1->get_id()==1) & (minp2->get_id()==3)){
-        s1.append(" wins 10 coins. Now P2 and P4 play");
+    if((minp1->get_id()==1) & (minp2->get_id()==2)){
+        s1.append(" wins 10 coins. Now P3 and P4 play");
     }
     else {
         s1.append(" wins 10 coins. P1 roll the die");
@@ -1677,8 +1704,8 @@ void MainWindow::on_checkGuess_clicked()
      QString qs1 = QString::fromStdString(s1);
 
      std::string st = "Tied Game.";
-     if((minp1->get_id()==1) & (minp2->get_id()==3)){
-         st.append(" Now P2 and P4 play");
+     if((minp1->get_id()==1) & (minp2->get_id()==2)){
+         st.append(" Now P3 and P4 play");
      }
      else {
          st.append(" P1 roll the die");
@@ -1697,11 +1724,13 @@ void MainWindow::on_checkGuess_clicked()
         ui->logText->setText(qs2);
         if(firstgame){
             firstgame = false;
+            ui->logText->setText("P1 wins: P3 and P4 play");
         }
         else{
             firstgame = true;
             minigamemode = false;
             tictac = true;
+            turns--;
         }
 
     }
@@ -1715,6 +1744,7 @@ void MainWindow::on_checkGuess_clicked()
             firstgame = true;
             minigamemode = false;
             tictac = true;
+            turns--;
         }
 
     }
@@ -1729,6 +1759,7 @@ void MainWindow::on_checkGuess_clicked()
             firstgame = true;
             minigamemode = false;
             tictac = true;
+            turns--;
         }
 
     }
@@ -1768,7 +1799,7 @@ void MainWindow::calculate_winner(){
     for(int i = 0; i < 4; i++){
         if(players[i]->get_coins() == max_coins){
             players[i]->add_stars();
-            qDebug() << "Player " << i + 1 << "GEts a star";
+            //qDebug() << "Player " << i + 1 << "GEts a star";
         }
     }
     int maxstars = 0;
@@ -1777,11 +1808,11 @@ void MainWindow::calculate_winner(){
             maxstars = players[i]->get_stars();
         }
     }
-    qDebug() << "MAX STARS: " << maxstars;
+    //qDebug() << "MAX STARS: " << maxstars;
     for(int i = 0; i < 4; i++){
         if(players[i]->get_stars() == maxstars){
             players[i]->add_wins();
-            qDebug() << "PLAYER: " << i << " WINS";
+            //qDebug() << "PLAYER: " << i << " WINS";
         }
     }
     return;
