@@ -64,7 +64,7 @@ private slots:
     void on_useItem_clicked();
 
 private:
-    int turns = 15;
+    int turns = 2;
     Player * players[4];
     Player * current_player;
     Player * winner;
@@ -75,12 +75,10 @@ private:
     void simulate_turn();
     Cell * cells[20][20];
     bool itemsfilled;
-    void testing();
     void qt_party();
     void calc_neighbors();
     int rows_ = 19;
     int cols_ = 19;
-    void debug_neighbors();
     void move_player();
     bool min_game_current;
     Player *minp1;

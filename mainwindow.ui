@@ -171,22 +171,6 @@
      </item>
     </layout>
    </widget>
-   <widget class="QLabel" name="minigameLabel">
-    <property name="geometry">
-     <rect>
-      <x>960</x>
-      <y>550</y>
-      <width>181</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Display Window</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
    <widget class="QWidget" name="verticalLayoutWidget_4">
     <property name="geometry">
      <rect>
@@ -569,7 +553,6 @@
    <zorder>continueButton</zorder>
    <zorder>rowLabel</zorder>
    <zorder>colLabel</zorder>
-   <zorder>minigameLabel</zorder>
    <zorder>verticalLayoutWidget_4</zorder>
    <zorder>verticalLayoutWidget</zorder>
    <zorder>verticalLayoutWidget_2</zorder>

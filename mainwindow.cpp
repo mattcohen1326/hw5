@@ -21,16 +21,19 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tictac->hide();
     ui->guesserGame_2->hide();
     ui->graphLayout->setVisible(false);
-    qt_party();
-    calc_neighbors();
-    current_player = players[0];
+    qt_party(); //sets up the board
+    calc_neighbors(); //assigns all cells their neighbor
+    current_player = players[0];//player 1 is the current player to start
     //qDebug() << current_player->roll;
     //qDebug() << outs ;
-    start_game();
+    start_game();//peoples cpu options
     scene->update();
 
 
 }
+/*fills the
+ * gatechoice with a choice of how many cpus
+ * */
 void MainWindow::start_game(){
     ui->logText->setText("Chose How many human players you will have");
     ui->gateChoice->addItem("0");
@@ -40,23 +43,25 @@ void MainWindow::start_game(){
     ui->gateChoice->addItem("4");
 
 }
+//depending on players direction and the available neighbors, a player is moved a space if their direction
+//has no options then a new direction is set and move player is called again
 void MainWindow::move_player(){ //logic to move one space based on what direction youre going NOT FINISHED
     current_player = players[cindex];
+    //set their new direction
     if(ui->gateChoice->currentText() != "" && ui->gateChoice->currentText() != "1" && ui->gateChoice->currentText() != "2" && ui->gateChoice->currentText() != "3" && ui->gateChoice->currentText() != "4" && ui->gateChoice->currentText()!="0"){
     current_player->set_dir(ui->gateChoice->currentText().toLocal8Bit().constData());
     //QString dir = QString::fromUtf8(current_player->get_dir().c_str());
     //qDebug() <<dir;
     }
+    //set direction to first choice if its a cpu
     if(!current_player->is_human()){
         for(int i = 0; i < ui->gateChoice->count();i++){
             if(current_player->get_first() == ui->gateChoice->itemText(i).toUtf8().constData()){
                     current_player->set_dir(ui->gateChoice->itemText(i).toUtf8().constData());
             }
     }
-    //QString de = QString::fromUtf8(current_player->get_dir().c_str());
-    //qDebug() << "DIRECTION" << de ;
     }
-    bool changecolor = true;
+    bool changecolor = true; //checks to see if other players are on the previous square as to not change its color
     for(int i = 0; i < 4; i++){
         if(current_player->id != players[i]->id){
             if((current_player->get_row() == players[i]->get_row()) && (current_player->get_col() == players[i]->get_col())){
@@ -72,10 +77,11 @@ void MainWindow::move_player(){ //logic to move one space based on what directio
         }
 
     }
+    //switch spot back to original if no space
     if(changecolor){
          cells[current_player->get_row()][current_player->get_col()]->set_color(cells[current_player->get_row()][current_player->get_col()]->get_norm());
     }
-
+    //if the player is going right
     if(current_player->get_dir() == "right"){
 
         if(cells[current_player->get_row()][current_player->get_col()+1]->is_gate){
@@ -239,6 +245,7 @@ void MainWindow::move_player(){ //logic to move one space based on what directio
 
     int crow = current_player->get_row();
     int ccol = current_player->get_col();
+    //if the new spot is a gate the appropriate gate choices are added
     if(cells[current_player->get_row()][current_player->get_col()]->is_gate){
         if(cells[crow][ccol]->neighbors[1]){
             if(current_player->get_dir()!="down"){
@@ -266,8 +273,7 @@ void MainWindow::move_player(){ //logic to move one space based on what directio
     else{
         ui->gateChoice->clear();
     }
-
-    //QColor col = QColor(255,0,255);
+    //new space color set and roll decremented if it is there last move add the appropriate coins
     cells[current_player->get_row()][current_player->get_col()]->set_color(current_player->get_color());
     current_player->roll--;
     ui->rollLabel->setText(QString("Roll: ").append(QString::number(current_player->roll)));
@@ -279,6 +285,7 @@ void MainWindow::move_player(){ //logic to move one space based on what directio
         //qDebug() << cells[current_player->get_row()][current_player->get_col()]->get_coins();
         current_player->add_coins(cells[current_player->get_row()][current_player->get_col()]->get_coins());
     }
+    //logic for creating a new star somewhere else and sets the cpus first choice to where the star  is
     if(cells[current_player->get_row()][current_player->get_col()]->is_star){
             current_player->add_stars();
             cells[current_player->get_row()][current_player->get_col()]->is_star =false;
@@ -314,8 +321,7 @@ void MainWindow::move_player(){ //logic to move one space based on what directio
 
 
     }
-//sets the board up
-
+//sets the board up pretty simple
 void MainWindow::qt_party(){
     srand(time(0));
     int alive_dead =0;
@@ -535,7 +541,8 @@ void MainWindow::qt_party(){
     cells[1][8]->set_color(QColor(255,255,0));
 
 }
-//fills each cells neighbor array
+//fills each cells neighbor array with
+// the same logic as the cells in hw4
 void MainWindow::calc_neighbors(){
     for(int i = 0; i <= rows_;i++){
         for(int j=0;j<= cols_;j++){
@@ -825,30 +832,13 @@ void MainWindow::calc_neighbors(){
     return;
 }
 //function to verify corrrect neighbors chosen
-void MainWindow::testing(){
-    while(testingcount > 0){
-
-    }
-}
-void MainWindow::debug_neighbors(){
-    for(int i = 0; i <= rows_;i++){
-        qDebug() << "Row " << i << "/n";
-        for(int j = 0; j<= cols_; j++){
-            qDebug() << "Cell" << i << " , " << j;
-            for(int k = 0; k < 8; k++){
-                qDebug() << cells[i][j]->neighbors[k];
-            }
-
-        }
-    }
-    return;
-}
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
 
+//updates all players values on the display
 void MainWindow::updateDisplay(){
     ui->p1name->setText("Player 1");
     QString s = QString::number(players[0]->get_stars());
@@ -883,21 +873,24 @@ void MainWindow::updateDisplay(){
     ui->p4coins->setText(c2_4);
 
 }
-void MainWindow::play(){
-
-}
-
-void MainWindow::simulate(){
-
-}
+//continue button clicked is the main driver of action
 void MainWindow::on_continueButton_clicked()
 {
     if(turns == 0 && !simulation){
         game_started = false;
-        ui->logText->setText("GAME OVER");
+        calculate_winner();
+        QString temp = QString("Winners : ");
+        for(int i = 0;i < 4; i++){
+            if(players[i]->get_wins() >= 1){
+                temp.append(QString::number(i)).append(" , ");
+            }
+        }
+        ui->logText->setText(temp);
         return;
+        //if all turns have been used end the game
     }
-    updateDisplay();
+    updateDisplay();//everytime continue is clicked update no matter what
+    //set the appropriate amount of humans
     if(!game_started){
         if(ui->gateChoice->currentText()=="1"){
                    players[0]->set_human(true);
@@ -925,15 +918,18 @@ void MainWindow::on_continueButton_clicked()
         qDebug() << players[1]->is_human();
         qDebug() << players[2]->is_human();
         qDebug() << players[3]->is_human();
+        //time for p1 to roll the dice
         rollmode = true;
         ui->logText->setText("Roll Die");
     }
     else{
         if(!rollmode && !minigamemode){
+            //if the player has rolled then move until no more rolls
             if(players[cindex]->roll > 0){
                 move_player();
             }
             else{
+                //switch the cindex to refect the new current player
                 cindex = cindex + 1;
                 ui->gateChoice->clear();
                 if(cindex == 4){
@@ -957,6 +953,7 @@ void MainWindow::on_continueButton_clicked()
             }
         }
         else if(minigamemode){
+            //plaly tictactoe and guessing game alternating every turn
             if(tictac){
                 ui->guesserGame_2->hide();
                 if(firstgame){
@@ -980,7 +977,7 @@ void MainWindow::on_continueButton_clicked()
 
 }
 
-
+//operation used to simulate a turn by ai
 void MainWindow::simulate_turn(){
     on_rollButton_clicked();
     while(players[cindex]->roll > 0){
@@ -988,7 +985,7 @@ void MainWindow::simulate_turn(){
     }
     //on_continueButton_clicked();
 }
-
+//create a new random dice roll
 void MainWindow::on_rollButton_clicked()
 {
     if(rollmode){
@@ -1722,9 +1719,9 @@ void MainWindow::on_checkGuess_clicked()
     if(p1score > p2score){
         minp2->add_coins(10);
         ui->logText->setText(qs2);
+
         if(firstgame){
             firstgame = false;
-            //ui->logText->setText("P2 wins: P3 and P4 play");
         }
         else{
             firstgame = true;
@@ -1826,7 +1823,8 @@ void MainWindow::update_graph(QGraphicsView * view2){
 
 }
 
-
+// a player can use either type of mushroom before a roll, they can only use the hammer if they are the player
+//with the least amount of coins
 void MainWindow::on_useItem_clicked()
 {
     if(rollmode){
@@ -1860,8 +1858,17 @@ void MainWindow::on_useItem_clicked()
                 }
             }
             else if(ui->itemChoice->currentText() == "Hammer"){
+                bool usehammer = true;
+                int mincoins = players[cindex]->get_coins();
+                for(int i = 0; i < 4;i++){
+                    if(players[i]->get_coins() <mincoins){
+                        usehammer=false;
+                    }
+                }
+                if(usehammer){
                 players[cindex]->items[0]->used_ = true;
                 players[cindex]->add_coins(50);
+                }
             }
             itemsfilled = false;
             ui->itemChoice->clear();
