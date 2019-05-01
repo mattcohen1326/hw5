@@ -78,8 +78,6 @@ MainWindow::MainWindow(QWidget *parent) :
     //qDebug() << current_player->roll;
     cells[1][8]->is_star = true;
     cells[1][8]->set_color(QColor(255,255,0));
-    std::string out = players[0]->get_dir();
-    QString outs = QString::fromUtf8(out.c_str());
     //qDebug() << outs ;
     start_game();
     scene->update();
@@ -164,6 +162,7 @@ void MainWindow::move_player(){ //logic to move one space based on what directio
                     current_player->set_dir("down");
                 }
                 move_player();
+                return;
             }
 
         }
@@ -194,10 +193,12 @@ void MainWindow::move_player(){ //logic to move one space based on what directio
                 if(cells[current_player->get_row()][current_player->get_col()]->neighbors[6]){
                     current_player->set_dir("down");
                     move_player();
+                    return;
                 }
                 else{
                     current_player->set_dir("up");
                     move_player();
+                    return;
                 }
             }
 
@@ -231,10 +232,12 @@ void MainWindow::move_player(){ //logic to move one space based on what directio
                 if(cells[current_player->get_row()][current_player->get_col()]->neighbors[4]){
                     current_player->set_dir("right");
                     move_player();
+                    return;
                 }
                 else{
                     current_player->set_dir("left");
                     move_player();
+                    return;
                 }
             }
 
@@ -246,6 +249,7 @@ void MainWindow::move_player(){ //logic to move one space based on what directio
             if(cells[current_player->get_row()][current_player->get_col()]->neighbors[4]){
                 current_player->set_dir("right");
                 move_player();
+                return;
             }
             else{
                 current_player->set_dir("left");
@@ -278,6 +282,7 @@ void MainWindow::move_player(){ //logic to move one space based on what directio
                     current_player->set_dir("right");
 
                     move_player();
+                    return;
                 }
                 else{
                     current_player->set_dir("left");
