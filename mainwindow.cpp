@@ -13,10 +13,16 @@ MainWindow::MainWindow(QWidget *parent) :
     scene = new QGraphicsScene; //make a new scene
     QGraphicsView * view = ui->graphicsView;
     view->setScene(scene); //make the graphics  view the scene
+    scene2 = new QGraphicsScene;
+    QGraphicsView * view2 = ui->minigame;
+    view2->setScene(scene2);
+    chartview = view2;
     srand(time(0)); //initialize random
     rows_ = 19;
     cols_ = 19;
-    ui->tictac->setVisible(false);
+    ui->tictac->hide();
+    ui->guesserGame_2->hide();
+    ui->graphLayout->setVisible(false);
     int alive_dead =0;
     for(int i = 0; i <= rows_; i++){
         for(int j = 0;j<= cols_;j++){
@@ -1402,6 +1408,7 @@ int MainWindow::check_tictac(Player *p1, Player *p2){
                 //tictac_minigame(players[2],players[3]);
                 counter = 0;
                 firstgame = false;
+
                 return 1;
             }
             else{
@@ -1422,6 +1429,7 @@ int MainWindow::check_tictac(Player *p1, Player *p2){
             ui->tictac->hide();
             //ui->logText->setText("p2 win : roll die");
             reset_tic();
+            ui->tictac->hide();
             if(firstgame){
                 ui->logText->setText("p2 win : p3 and p4 play next game");
                 counter = 0;
@@ -1451,7 +1459,7 @@ int MainWindow::check_tictac(Player *p1, Player *p2){
             p1->add_coins(5);
             p2->add_coins(5);
             reset_tic();
-            //ui->tictac->hide();
+            ui->tictac->hide();
             if(firstgame){
                 ui->logText->setText("Tied Game : p3 and p4 play next game");
                 counter = 0;
@@ -1657,6 +1665,7 @@ void MainWindow::reset_tic(){
 
 void MainWindow::on_simulateButton_clicked()
 {
+    ui->graphLayout->setVisible(true);
     if(!game_started){
         on_continueButton_clicked();
         for(int i = 0; i < turns; i++){
@@ -1672,6 +1681,14 @@ void MainWindow::on_simulateButton_clicked()
             on_continueButton_clicked();
         }
 
+        most_coins();
+        calculate_winner();
+
+
+
+
+
+
     }
     else{
         for(int i = 0; i < 4; i++){
@@ -1684,6 +1701,141 @@ void MainWindow::on_simulateButton_clicked()
         }
 
     }
+    update_graph(chartview);
+    scene2->update();
+//    for(int i = 0; i <4; i++){
+//        qDebug() << players[i]->get_wins();
+//    }
+
+}
+
+//initialize guesser game
+void MainWindow::guesser_game(Player * p1, Player * p2){
+    ui->guesserGame_2->show();
+    guess_answer = rand()%100+1;
+    minp1 = p1;
+    minp2 = p2;
+
+
+}
+
+void MainWindow::on_checkGuess_clicked()
+{
+    //Ai chooses random number
+    if(!minp1->is_human()){
+        int p1rand = rand()%100+1;
+        ui->p1choice->setValue(p1rand);
+    }
+    if(!minp2->is_human()){
+        int p2rand = rand()%100+1;
+        ui->p2choice->setValue(p2rand);
+    }
+
+    //Set strings to print
+    std::string s2 = "P";
+    s2.append(std::to_string(minp2->get_id()));
+    if((minp1->get_id()==1) & (minp2->get_id()==2)){
+        s2.append(" wins 10 coins. Now P3 and P4 play");
+    }
+    else {
+        s2.append(" wins 10 coins. Roll the die");
+
+    }
+    QString qs2 = QString::fromStdString(s2);
+
+    std::string s1 = "P";
+    s1.append(std::to_string(minp1->get_id()));
+    if((minp1->get_id()==1) & (minp2->get_id()==2)){
+        s1.append(" wins 10 coins. Now P3 and P4 play");
+    }
+    else {
+        s1.append(" wins 10 coins. Roll the die");
+
+    }
+     QString qs1 = QString::fromStdString(s1);
+
+     std::string st = "Tied Game.";
+     if((minp1->get_id()==1) & (minp2->get_id()==2)){
+         st.append(" Now P3 and P4 play");
+     }
+     else {
+         st.append(" Roll the die");
+
+     }
+
+     QString qst = QString::fromStdString(st);
+
+    //calculate scores
+    int p1score = abs(ui->p1choice->value() - guess_answer);
+    int p2score = abs(ui->p2choice->value() - guess_answer);
+
+    //check for winner or tie
+    if(p1score > p2score){
+        minp2->add_coins(10);
+        ui->logText->setText(qs2);
+    }
+    else if (p2score > p1score) {
+        minp1->add_coins(10);
+        ui->logText->setText(qs1);
+    }
+    else {
+        minp1->add_coins(5);
+        minp2->add_coins(5);
+        ui->logText->setText(qst);
+    }
+    ui->actualnum->display(guess_answer);
+}
+
+void MainWindow::most_coins(){
+    //give a star to player with most coins
+    int max_coins = 0;
+    for(int i = 0; i <4; i++){
+        if(max_coins < players[i]->get_coins()){
+            max_coins = players[i]->get_coins();
+        }
+    }
+    for(int i = 0; i <4; i++){
+        if(max_coins == players[i]->get_coins()){
+            players[i]->add_stars();
+        }
+    }
+    updateDisplay();
+}
+
+void MainWindow::calculate_winner(){
+    int winner_coins=0;
+    int max_stars = 0;
+    //Player * winner;
+    for(int i = 0; i <4; i++){
+        if(max_stars < players[i]->get_stars()){
+            max_stars = players[i]->get_stars();
+        }
+    }
+    for(int i = 0; i <4; i++){
+        if(max_stars == players[i]->get_stars()){
+            if(winner_coins < players[i]->get_coins() ){
+                winner_coins = players[i]->get_coins();
+                winner = players[i];
+            }
+        }
+    }
+    winner->add_wins();
+
+
+}
+
+void MainWindow::update_graph(QGraphicsView * view2){
+
+        scene2->clear();
+        int framewidth = view2->frameSize().width()/4-10;
+        int frame_height = view2->frameSize().rheight();
+        for(int i = 0; i<4 ;i++){
+
+            scene2->addRect(QRect(framewidth*i,frame_height- (players[i]->get_wins())*60,framewidth,(players[i]->get_wins()*60)));
+
+        }
+
+
 
 }
 

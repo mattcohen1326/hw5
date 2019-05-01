@@ -17,7 +17,9 @@ public:
     void set_col(int x){current_col = x;}
     int get_coins() {return coins;}
     int get_stars() {return stars;}
+    int get_wins(){return wins;}
     void add_stars(){stars+=1;}
+    void add_wins(){wins +=1;}
     std::string get_first(){return first_choice;}
     void set_first(std::string s){first_choice = s;}
     std::string get_dir(){return direction;}
@@ -31,6 +33,8 @@ public:
     void clear_stars(){stars = 0;}
     void add_coins(int x);
     Item * items[3];
+    int get_id(){return id;}
+
 private:
     std::string first_choice = "";
     bool human;
@@ -40,6 +44,7 @@ private:
     int current_col;
     int coins;
     int stars;
+    int wins = 0;
 
 };
 
