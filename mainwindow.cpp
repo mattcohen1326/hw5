@@ -1722,9 +1722,9 @@ void MainWindow::on_checkGuess_clicked()
     if(p1score > p2score){
         minp2->add_coins(10);
         ui->logText->setText(qs2);
+
         if(firstgame){
             firstgame = false;
-            ui->logText->setText("P1 wins: P3 and P4 play");
         }
         else{
             firstgame = true;
