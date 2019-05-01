@@ -1563,7 +1563,7 @@ void MainWindow::on_simulateButton_clicked()
         ui->gateChoice->clear();
         ui->gateChoice->addItem("0");
         game_started = true;
-        //on_continueButton_clicked();
+        on_continueButton_clicked();
         for(int i = 0; i < sturns; i ++){
             simulate_turn();
             on_continueButton_clicked();
@@ -1724,7 +1724,7 @@ void MainWindow::on_checkGuess_clicked()
         ui->logText->setText(qs2);
         if(firstgame){
             firstgame = false;
-            ui->logText->setText("P1 wins: P3 and P4 play");
+            //ui->logText->setText("P2 wins: P3 and P4 play");
         }
         else{
             firstgame = true;
