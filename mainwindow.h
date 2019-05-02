@@ -85,6 +85,7 @@ private:
     Player *minp2;
     int counter = 0;
     int guess_answer;
+    bool can_check;
 
 
 };

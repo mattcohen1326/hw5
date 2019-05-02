@@ -1660,13 +1660,15 @@ void MainWindow::guesser_game(Player * p1, Player * p2){
     if(!players[0]->is_human() && !players[1]->is_human() && !players[2]->is_human() && !players[3]->is_human()){
         on_checkGuess_clicked();
     }
+    can_check = true;
 
 
 }
 
 void MainWindow::on_checkGuess_clicked()
 {
-    if(!tictac){
+
+    if(!tictac && can_check){
         if(!minp1->is_human()){
             int p1rand = rand()%100+1;
             ui->p1choice->setValue(p1rand);
@@ -1680,7 +1682,7 @@ void MainWindow::on_checkGuess_clicked()
     //Set strings to print
     std::string s2 = "P";
     s2.append(std::to_string(minp2->get_id()));
-    if((minp1->get_id()==0) & (minp2->get_id()==1)){
+    if((minp1->get_id()==1) && (minp2->get_id()==2)){
         s2.append(" wins 10 coins. Now P3 and P4 play");
     }
     else {
@@ -1691,7 +1693,7 @@ void MainWindow::on_checkGuess_clicked()
 
     std::string s1 = "P";
     s1.append(std::to_string(minp1->get_id()));
-    if((minp1->get_id()==2) & (minp2->get_id()==3)){
+    if((minp1->get_id()==1) && (minp2->get_id()==2)){
         s1.append(" wins 10 coins. Now P3 and P4 play");
     }
     else {
@@ -1701,7 +1703,7 @@ void MainWindow::on_checkGuess_clicked()
      QString qs1 = QString::fromStdString(s1);
 
      std::string st = "Tied Game.";
-     if((minp1->get_id()==0) & (minp2->get_id()==1)){
+     if((minp1->get_id()==1) && (minp2->get_id()==2)){
          st.append(" Now P3 and P4 play");
      }
      else {
@@ -1764,6 +1766,7 @@ void MainWindow::on_checkGuess_clicked()
 
     ui->actualnum->display(guess_answer);
     }
+    can_check = false;
 }
 
 
